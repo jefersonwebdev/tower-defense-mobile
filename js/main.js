@@ -35,6 +35,8 @@ let score = 0;
 let TILE_SIZE = 0;
 let shakeTime = 0;
 let shakeIntensity = 0;
+let draggedTower = null; 
+let originalPos = { col: 0, row: 0 }; // Para devolver a torre se o lugar for inválido
 
 // Listas de Entidades
 const towers = [];
@@ -135,7 +137,7 @@ function updateAndRender(currentTime) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     gameMap.draw(ctx, TILE_SIZE);
 
-    // 1. Spawn de Inimigos (Seguro contra erros de ENEMY_TYPES)
+    // 1. Spawn de Inimigos
     const enemyData = waveManager.update(currentTime);
     if (enemyData) {
         enemies.push(new Enemy(currentLevelData.waypoints, enemyData));
@@ -147,6 +149,7 @@ function updateAndRender(currentTime) {
         enemy.update(TILE_SIZE);
         enemy.draw(ctx, TILE_SIZE);
 
+        // Inimigo chegou ao fim do caminho
         if (enemy.waypointIndex >= currentLevelData.waypoints.length) {
             lives--;
             shakeTime = 15; shakeIntensity = 8;
@@ -156,6 +159,7 @@ function updateAndRender(currentTime) {
             continue;
         }
 
+        // Inimigo morreu
         if (enemy.isDead) {
             money += enemy.reward;
             score += 10;
@@ -163,6 +167,14 @@ function updateAndRender(currentTime) {
             updateHUD();
             enemies.splice(i, 1);
         }
+    }
+
+    // --- VERIFICAÇÃO DE FINAL DE ONDA ---
+    // Se o spawn acabou E não há mais inimigos na tela, a onda terminou de fato
+    if (waveManager.isWaveActive && waveManager.spawningComplete && enemies.length === 0) {
+        waveManager.isWaveActive = false;
+        console.log("Onda finalizada! Movimentação de torres liberada.");
+        updateHUD(); // Atualiza interface se necessário
     }
 
     // 3. Torres e Combate
@@ -175,12 +187,14 @@ function updateAndRender(currentTime) {
     handleProjectiles();
     handleParticles();
 
-    // 5. Lógica de Construção com RESET
+    // 5. LÓGICA DE MOVIMENTAÇÃO E CONSTRUÇÃO
+    // A handleDragLogic internamente já deve checar !waveManager.isWaveActive
+    handleDragLogic();  
     handleBuildLogic();
 
     // Sincroniza estado do botão FAB
     const fab = document.getElementById('fab-wave-control');
-    if (!waveManager.isWaveActive && enemies.length === 0) {
+    if (!waveManager.isWaveActive) {
         fab.classList.remove('wave-active');
     }
 
@@ -222,6 +236,46 @@ function handleBuildLogic() {
         }
     }
 }
+
+
+
+function handleDragLogic() {
+    // 1. INICIAR ARRASTE
+    // Adicionamos a condição: !waveManager.isWaveActive
+    if (input.isDown && !draggedTower && !selectedTowerType && !waveManager.isWaveActive) {
+        const { col, row } = input.getTileCoords();
+        const towerFound = towers.find(t => t.col === col && t.row === row);
+        
+        if (towerFound) {
+            draggedTower = towerFound;
+            originalPos = { col: towerFound.col, row: towerFound.row };
+            draggedTower.isDragging = true;
+        }
+    }
+
+    // 2. DURANTE O ARRASTE (Permanece igual)
+    if (draggedTower && input.isDown) {
+        const { col, row } = input.getTileCoords();
+        draggedTower.col = col;
+        draggedTower.row = row;
+    }
+
+    // 3. SOLTAR A TORRE (Permanece igual)
+    if (!input.isDown && draggedTower) {
+        const { col, row } = draggedTower;
+        const isTerrainValid = gameMap.getTileAt(col, row) === 0;
+        const isOccupied = towers.find(t => t !== draggedTower && t.col === col && t.row === row);
+
+        if (!isTerrainValid || isOccupied) {
+            draggedTower.col = originalPos.col;
+            draggedTower.row = originalPos.row;
+        }
+
+        draggedTower.isDragging = false;
+        draggedTower = null;
+    }
+}
+
 
 /**
  * EVENTOS GLOBAIS

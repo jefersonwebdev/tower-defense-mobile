@@ -90,86 +90,101 @@ export class Tower {
     }
 
     draw(ctx, tileSize) {
-        const x = this.col * tileSize;
-        const y = this.row * tileSize;
-        const centerX = x + tileSize / 2;
-        const centerY = y + tileSize / 2;
+    const x = this.col * tileSize;
+    const y = this.row * tileSize;
+    const centerX = x + tileSize / 2;
+    const centerY = y + tileSize / 2;
 
-        // 1. CÁLCULO DA PULSAÇÃO (Alcance "Respirando")
-        const pulse = 0.1 + Math.sin(Date.now() / 600) * 0.05;
-        
-        // 2. RAIO DE ALCANCE DINÂMICO TEMÁTICO
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, this.range * tileSize, 0, Math.PI * 2);
-        
-        const rangeGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.range * tileSize);
-        rangeGrad.addColorStop(0, "rgba(0, 0, 0, 0)");
-        rangeGrad.addColorStop(0.8, this.hexToRgba(this.color, pulse));
-        rangeGrad.addColorStop(1, this.hexToRgba(this.color, pulse + 0.1));
-        
-        ctx.fillStyle = rangeGrad;
-        ctx.fill();
-        
-        ctx.strokeStyle = this.hexToRgba(this.color, 0.3);
-        ctx.setLineDash([8, 4]);
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.setLineDash([]);
+    ctx.save(); // Salva o estado para aplicar efeitos globais se necessário
 
-        // 3. SOMBRA PROJETADA
+    // 1. EFEITO DE ARRASTE (DRAG FEEDBACK)
+    if (this.isDragging) {
+        // Deixa a torre "fantasma" enquanto move
+        ctx.globalAlpha = 0.6;
+        
+        // Desenha um quadrado de destaque no chão para mostrar o snap-to-grid
+        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.fillRect(x, y, tileSize, tileSize);
+    }
+
+    // 2. CÁLCULO DA PULSAÇÃO (Alcance "Respirando")
+    // Se estiver arrastando, aumentamos a opacidade para ajudar o jogador a ver o alcance
+    const pulseBase = Math.sin(Date.now() / 600) * 0.05;
+    const pulse = this.isDragging ? 0.3 + pulseBase : 0.1 + pulseBase;
+    
+    // 3. RAIO DE ALCANCE DINÂMICO
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, this.range * tileSize, 0, Math.PI * 2);
+    
+    const rangeGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.range * tileSize);
+    rangeGrad.addColorStop(0, "rgba(0, 0, 0, 0)");
+    rangeGrad.addColorStop(0.8, this.hexToRgba(this.color, pulse));
+    rangeGrad.addColorStop(1, this.hexToRgba(this.color, pulse + 0.1));
+    
+    ctx.fillStyle = rangeGrad;
+    ctx.fill();
+    
+    ctx.strokeStyle = this.hexToRgba(this.color, 0.4);
+    ctx.setLineDash([8, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 4. SOMBRA PROJETADA (Só desenha se não estiver arrastando para não poluir)
+    if (!this.isDragging) {
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.beginPath();
         ctx.ellipse(centerX + 4, centerY + 4, tileSize * 0.35, tileSize * 0.25, 0, 0, Math.PI * 2);
         ctx.fill();
-
-        // 4. BASE DA TORRE (Metal Industrial)
-        const padding = tileSize * 0.15;
-        const baseSize = tileSize - (padding * 2);
-        
-        ctx.fillStyle = "#1a252f"; // Sombra base
-        ctx.fillRect(x + padding, y + padding, baseSize, baseSize);
-        
-        ctx.fillStyle = "#2c3e50"; // Metal principal
-        ctx.fillRect(x + padding + 2, y + padding + 2, baseSize - 4, baseSize - 6);
-
-        // 5. CANHÃO GIRATÓRIO
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(this.angle + Math.PI / 2);
-        
-        // Base do cano
-        ctx.fillStyle = "#34495e";
-        ctx.fillRect(-tileSize * 0.15, -tileSize * 0.1, tileSize * 0.3, tileSize * 0.2);
-        
-        // Cano principal
-        ctx.fillStyle = "#1a252f"; 
-        ctx.fillRect(-tileSize * 0.08, -tileSize * 0.45, tileSize * 0.16, tileSize * 0.45);
-        
-        // Bocal colorido (Identificação visual)
-        ctx.fillStyle = this.color;
-        ctx.fillRect(-tileSize * 0.1, -tileSize * 0.48, tileSize * 0.2, tileSize * 0.08);
-        ctx.restore();
-
-        // 6. CÚPULA SUPERIOR (Efeito de Vidro/Esfera)
-        const domeGrad = ctx.createRadialGradient(
-            centerX - tileSize * 0.08, centerY - tileSize * 0.08, 0,
-            centerX, centerY, tileSize * 0.25
-        );
-        domeGrad.addColorStop(0, this.color);
-        domeGrad.addColorStop(1, "#111");
-
-        ctx.fillStyle = domeGrad;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, tileSize * 0.22, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Brilho de reflexo
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, tileSize * 0.18, -Math.PI/2, 0);
-        ctx.stroke();
     }
+
+    // 5. BASE DA TORRE
+    const padding = tileSize * 0.15;
+    const baseSize = tileSize - (padding * 2);
+    
+    ctx.fillStyle = "#1a252f"; 
+    ctx.fillRect(x + padding, y + padding, baseSize, baseSize);
+    
+    ctx.fillStyle = "#2c3e50"; 
+    ctx.fillRect(x + padding + 2, y + padding + 2, baseSize - 4, baseSize - 6);
+
+    // 6. CANHÃO GIRATÓRIO
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(this.angle + Math.PI / 2);
+    
+    ctx.fillStyle = "#34495e";
+    ctx.fillRect(-tileSize * 0.15, -tileSize * 0.1, tileSize * 0.3, tileSize * 0.2);
+    
+    ctx.fillStyle = "#1a252f"; 
+    ctx.fillRect(-tileSize * 0.08, -tileSize * 0.45, tileSize * 0.16, tileSize * 0.45);
+    
+    ctx.fillStyle = this.color;
+    ctx.fillRect(-tileSize * 0.1, -tileSize * 0.48, tileSize * 0.2, tileSize * 0.08);
+    ctx.restore();
+
+    // 7. CÚPULA SUPERIOR
+    const domeGrad = ctx.createRadialGradient(
+        centerX - tileSize * 0.08, centerY - tileSize * 0.08, 0,
+        centerX, centerY, tileSize * 0.25
+    );
+    domeGrad.addColorStop(0, this.color);
+    domeGrad.addColorStop(1, "#111");
+
+    ctx.fillStyle = domeGrad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, tileSize * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Brilho de reflexo
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, tileSize * 0.18, -Math.PI/2, 0);
+    ctx.stroke();
+
+    ctx.restore(); // Restaura o estado original (importante por causa do globalAlpha)
+}
 
     /**
      * Helper para aplicar transparência em cores Hex

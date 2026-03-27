@@ -1,26 +1,47 @@
+/**
+ * INPUT.JS - Gerenciamento de Toque, Mouse e Estado de Pressão
+ */
 export class Input {
     constructor(canvas, tileSize) {
         this.canvas = canvas;
         this.tileSize = tileSize;
-        this.selectedTile = null; // Guarda {col, row} do último toque
+        this.selectedTile = null; 
+        this.isDown = false; // Estado crucial para o Arrastar e Soltar
 
-        // Evento para Telemóvel (Touch)
-        this.canvas.addEventListener('touchstart', (e) => this.handleTouch(e), { passive: false });
+        // --- EVENTOS DE RATO (PC) ---
+        this.canvas.addEventListener('mousedown', (e) => {
+            this.isDown = true;
+            this.handleMouse(e);
+        });
+        window.addEventListener('mouseup', () => {
+            this.isDown = false;
+        });
+        this.canvas.addEventListener('mousemove', (e) => {
+            if (this.isDown) this.handleMouse(e);
+        });
+
+        // --- EVENTOS DE TOQUE (MOBILE) ---
+        this.canvas.addEventListener('touchstart', (e) => {
+            this.isDown = true;
+            this.handleTouch(e);
+        }, { passive: false });
         
-        // Evento para Rato (Desktop - útil para testares no PC)
-        this.canvas.addEventListener('mousedown', (e) => this.handleMouse(e));
+        window.addEventListener('touchend', () => {
+            this.isDown = false;
+        });
+
+        this.canvas.addEventListener('touchmove', (e) => {
+            if (this.isDown) this.handleTouch(e);
+        }, { passive: false });
     }
 
-    /**
-     * Atualiza o tamanho do tile se o ecrã rodar
-     */
     updateTileSize(newSize) {
         this.tileSize = newSize;
     }
 
     handleTouch(e) {
-        // Impede o comportamento padrão (ex: zoom ou scroll)
-        e.preventDefault();
+        // Impede scroll/zoom enquanto joga
+        if (e.cancelable) e.preventDefault();
         const touch = e.touches[0];
         this.processInput(touch.clientX, touch.clientY);
     }
@@ -32,23 +53,26 @@ export class Input {
     processInput(clientX, clientY) {
         const rect = this.canvas.getBoundingClientRect();
         
-        // Calcula a posição relativa ao canvas
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
+        // Cálculo de escala (caso o CSS redimensione o canvas)
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
 
-        // Converte pixels em coordenadas da Grade (Grid)
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+
         const col = Math.floor(x / this.tileSize);
         const row = Math.floor(y / this.tileSize);
 
         this.selectedTile = { col, row };
-        
-        // Dispara um evento personalizado para o jogo saber que houve um toque
-        console.log(`Toque detetado na Coluna: ${col}, Linha: ${row}`);
     }
 
     /**
-     * Limpa a seleção (ex: após construir ou cancelar)
+     * Helper para pegar as coordenadas atuais em qualquer momento
      */
+    getTileCoords() {
+        return this.selectedTile || { col: -1, row: -1 };
+    }
+
     clearSelection() {
         this.selectedTile = null;
     }
