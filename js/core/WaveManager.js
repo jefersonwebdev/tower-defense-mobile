@@ -4,14 +4,14 @@
 export class WaveManager {
     constructor() {
         this.currentWave = 0;       // Onda atual
-        this.enemiesInWave = 5;     // Quantos inimigos na primeira onda
-        this.spawnedCount = 0;      // Quantos já nasceram nesta onda
-        this.isWaveActive = false;  // Se os inimigos estão saindo agora
+        this.enemiesInWave = 5;     // Quantidade base
+        this.spawnedCount = 0;      // Quantos já nasceram nesta horda
+        this.isWaveActive = false;  // Se o nascimento (spawn) está ocorrendo
         
         this.lastSpawnTime = 0;
-        this.spawnInterval = 1500;  // 1.5 segundos entre cada inimigo da horda
+        this.spawnInterval = 2000;  // Intervalo padrão entre inimigos
         
-        this.difficultyMultiplier = 1.2; // Aumento de 20% na vida por onda
+        // Removi o difficultyMultiplier de vida conforme solicitado
     }
 
     /**
@@ -24,37 +24,39 @@ export class WaveManager {
         this.spawnedCount = 0;
         this.isWaveActive = true;
         
-        // Aumenta a quantidade de inimigos a cada onda
-        this.enemiesInWave = 5 + (this.currentWave * 2);
+        // LÓGICA DE QUANTIDADE:
+        // Onda 1: 5 + (1-1)*3 = 5
+        // Onda 2: 5 + (2-1)*3 = 8... e assim por diante
+        this.enemiesInWave = 5 + (this.currentWave - 1) * 2;
         
-        // Diminui levemente o intervalo (fica mais frenético)
-        this.spawnInterval = Math.max(500, 1500 - (this.currentWave * 100));
+        // Opcional: manter o intervalo fixo ou diminuir levemente para não demorar demais
+        this.spawnInterval = Math.max(600, 1500 - (this.currentWave * 50));
         
         console.log(`Iniciando Onda ${this.currentWave}: ${this.enemiesInWave} inimigos.`);
     }
 
     /**
      * Verifica se é hora de criar um novo inimigo
-     * @returns {Object|null} Retorna dados do inimigo ou null
      */
     update(currentTime) {
+        // Se a onda não está ativa, não faz nada
         if (!this.isWaveActive) return null;
 
-        // Se já soltou todos os inimigos da onda
+        // Se já alcançou o limite de inimigos da onda atual
         if (this.spawnedCount >= this.enemiesInWave) {
-            this.isWaveActive = false;
+            this.isWaveActive = false; 
             return null;
         }
 
-        // Lógica de tempo para o nascimento (Spawn)
+        // Controle de tempo para o Spawn
         if (currentTime - this.lastSpawnTime > this.spawnInterval) {
             this.lastSpawnTime = currentTime;
             this.spawnedCount++;
 
-            // Retorna as estatísticas para esse inimigo específico
+            // Retorna os dados do inimigo
             return {
-                health: 100 * Math.pow(this.difficultyMultiplier, this.currentWave - 1),
-                speed: 0.02 + (this.currentWave * 0.002) // Ficam levemente mais rápidos
+                health: 100, // Vida fixa em 100 para todas as ondas
+                speed: 0.02 + (this.currentWave * 0.001) // Velocidade aumenta sutilmente para manter o desafio
             };
         }
 
