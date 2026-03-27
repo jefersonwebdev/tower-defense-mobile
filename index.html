@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <title>TD Mobile</title>
+</head>
+<body>
+    <div id="game-container">
+        <div id="start-screen">
+        <div class="menu-content">
+            <h1>MEGA TD</h1>
+            <p>Defenda sua base contra as hordas!</p>
+            <button id="btn-start-game">JOGAR AGORA</button>
+            <div class="instructions">
+                <span>🖱️ Clique no gramado para construir</span>
+                <span>💀 Inicie a onda quando estiver pronto</span>
+            </div>
+        </div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+    <div id="game-stats">
+        <div class="stat-item">
+            <span id="icon-heart-lives" class="icon heart"></span>
+            <span id="label-lives">500</span>
+        </div>
+        <div class="stat-item">
+            <span class="icon coin"></span>
+            <span id="label-money">345</span>
+        </div>
+        <div class="stat-item">
+            <span class="icon wave"></span>
+            <span id="label-wave">1/4</span>
+        </div>
+    </div>
+
+    <button id="btn-next-wave">INICIAR ONDA</button>
+
+    <div id="tower-inventory"></div>
+</div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

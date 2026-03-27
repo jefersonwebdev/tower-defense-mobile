@@ -1,0 +1,377 @@
+/* style.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Impede rolagem no mobile */
+    background-color: #1a1a1a; /* Fundo escuro fora do canvas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    display: block;
+    touch-action: none; /* CRÍTICO: Desativa gestos do navegador no jogo */
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+#tower-inventory {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 15px;
+    border: 2px solid #555;
+}
+
+.tower-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    border: none;
+    color: #333;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.tower-btn.selected {
+    border: 3px solid white;
+    transform: scale(1.1);
+}
+
+#game-container {
+    position: relative; /* Necessário para que a UI flutue sobre o canvas */
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Deixa o toque passar para o canvas por padrão */
+}
+
+#tower-inventory {
+    pointer-events: auto; /* Reativa o toque apenas nos botões */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+#game-stats {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    pointer-events: none; /* Para não atrapalhar o clique no mapa */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#label-money { color: #f1c40f; font-weight: bold; } /* Amarelo para dinheiro */
+#label-lives { color: #e74c3c; font-weight: bold; } /* Vermelho para vida */
+
+/* Botão de Próxima Onda */
+#btn-next-wave {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    pointer-events: auto; /* Garante que o clique funcione */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#btn-next-wave:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#btn-next-wave:disabled {
+    background: #7f8c8d;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+/* Ajuste no container de Stats para não bater no botão */
+#game-stats {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 12px;
+    border-radius: 12px;
+    border-left: 4px solid #f1c40f;
+    pointer-events: none;
+}
+
+#label-wave {
+    display: block;
+    font-size: 18px;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+#game-stats {
+    /* Centralização Horizontal */
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* O segredo para centralizar no meio exato */
+    
+    /* Layout da Barra */
+    display: flex;
+    flex-direction: row; /* Itens um ao lado do outro */
+    align-items: center;
+    gap: 20px;
+    padding: 8px 25px;
+    
+    /* Visual da Imagem */
+    background: rgba(0, 0, 0, 0.5); /* Preto semi-transparente */
+    border-radius: 50px; /* Bordas bem arredondadas */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px); /* Efeito de vidro fosco */
+    
+    z-index: 100;
+    pointer-events: none;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-family: 'Arial Black', sans-serif; /* Fonte robusta como na imagem */
+    font-size: 20px;
+    /* Efeito de contorno no texto */
+    text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
+}
+
+.icon {
+    font-size: 24px;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+}
+
+/* Cores específicas se quiser usar emojis ou ícones */
+.heart { color: #ff4757; }
+.coin { color: #eccc68; }
+.wave { color: #ffffff; }
+
+#game-stats {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 25px;
+    padding: 10px 30px;
+    background: rgba(0, 0, 0, 0.45); /* Barra escura suave */
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-item span {
+    color: white;
+    font-family: 'Arial Black', Gadget, sans-serif;
+    font-size: 22px;
+    /* Contorno preto grosso nos números igual à imagem */
+    text-shadow: 
+        2px 2px 0 #000, 
+        -2px -2px 0 #000, 
+        2px -2px 0 #000, 
+        -2px 2px 0 #000,
+        0px 2px 0 #000;
+}
+
+/* Estilo dos Ícones SVG */
+.icon {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.heart-svg { fill: #ff4757; } /* Vermelho Vibrante */
+
+.wave-svg { fill: #ffffff; } /* Branco para a caveira */
+
+#game-stats {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding: 10px 30px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-item span {
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 22px;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+/* Configuração Geral dos Ícones */
+.icon {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+}
+
+/* Ícone de Coração (Vermelho) */
+.heart {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4757'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+}
+
+/* Ícone de Moeda (Dourada) */
+.coin {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23f1c40f'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%23f39c12' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* Ícone de Caveira (Branco) */
+.wave {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 3 2.5 5 2.5 5l.5 3h8l.5-3s2.5-2 2.5-5a7 7 0 0 0-7-7zM9 11.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 22h8v-2H8v2z'/%3E%3C/svg%3E");
+}
+
+/* Adicione isso ao final do seu arquivo style.css */
+
+/* Definição da Animação de Pulso */
+@keyframes heart-pulse {
+    0% { transform: scale(1); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+    30% { transform: scale(1.4); filter: drop-shadow(0 0 10px #ff4757) brightness(1.3); } /* Zoom e Brilho */
+    60% { transform: scale(0.9); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); } /* Encolhe levemente */
+    100% { transform: scale(1); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+}
+
+/* Classe CSS que aplica a animação */
+.icon.heart.damage-taken {
+    animation: heart-pulse 0.4s ease-out; /* Executa a animação uma vez */
+}
+
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px); /* Efeito de vidro fosco no fundo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Fica acima de tudo */
+    transition: opacity 0.5s ease;
+}
+
+.menu-content {
+    text-align: center;
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+}
+
+.menu-content h1 {
+    font-size: 60px;
+    margin-bottom: 10px;
+    color: #f1c40f;
+    text-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
+}
+
+#btn-start-game {
+    padding: 20px 50px;
+    font-size: 24px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+    transition: transform 0.2s;
+    animation: button-pulse 2s infinite;
+}
+
+#btn-start-game:hover {
+    transform: scale(1.1);
+    background: #27ae60;
+}
+
+.instructions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+@keyframes button-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
