@@ -180,7 +180,7 @@ function updateAndRender(currentTime) {
     // 3. Torres e Combate
     towers.forEach(t => {
         t.update(currentTime, enemies, TILE_SIZE, projectiles);
-        t.draw(ctx, TILE_SIZE);
+        t.draw(ctx, TILE_SIZE, gameMap);
     });
 
     // 4. Projéteis e Partículas

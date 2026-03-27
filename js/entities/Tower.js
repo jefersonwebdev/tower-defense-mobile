@@ -89,48 +89,59 @@ export class Tower {
         playSound(SFX.shoot);
     }
 
-    draw(ctx, tileSize) {
+    draw(ctx, tileSize, gameMap) {
     const x = this.col * tileSize;
     const y = this.row * tileSize;
     const centerX = x + tileSize / 2;
     const centerY = y + tileSize / 2;
 
-    ctx.save(); // Salva o estado para aplicar efeitos globais se necessário
+    ctx.save(); 
 
-    // 1. EFEITO DE ARRASTE (DRAG FEEDBACK)
+    // 1. VALIDAÇÃO DE POSICIONAMENTO (CAMINHO VS GRAMA)
+    // Verifica se o tile atual sob a torre é diferente de 0 (caminho/obstáculo)
+    const isInvalidPos = gameMap && gameMap.getTileAt(this.col, this.row) !== 0;
+    
+    // Define a cor temática: Vermelho se inválido e arrastando, senão a cor original da torre
+    const feedbackColor = (this.isDragging && isInvalidPos) ? "#ff4757" : this.color;
+
+    // 2. EFEITO DE ARRASTE (DRAG FEEDBACK)
     if (this.isDragging) {
-        // Deixa a torre "fantasma" enquanto move
-        ctx.globalAlpha = 0.6;
+        ctx.globalAlpha = 0.7; // Levemente mais visível que antes
         
-        // Desenha um quadrado de destaque no chão para mostrar o snap-to-grid
-        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+        // Quadrado de destaque no chão: Vermelho se inválido, branco se válido
+        ctx.fillStyle = isInvalidPos ? "rgba(255, 71, 87, 0.3)" : "rgba(255, 255, 255, 0.2)";
         ctx.fillRect(x, y, tileSize, tileSize);
     }
 
-    // 2. CÁLCULO DA PULSAÇÃO (Alcance "Respirando")
-    // Se estiver arrastando, aumentamos a opacidade para ajudar o jogador a ver o alcance
+    // 3. CÁLCULO DA PULSAÇÃO
     const pulseBase = Math.sin(Date.now() / 600) * 0.05;
     const pulse = this.isDragging ? 0.3 + pulseBase : 0.1 + pulseBase;
     
-    // 3. RAIO DE ALCANCE DINÂMICO
+    // 4. RAIO DE ALCANCE DINÂMICO
     ctx.beginPath();
     ctx.arc(centerX, centerY, this.range * tileSize, 0, Math.PI * 2);
     
     const rangeGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.range * tileSize);
     rangeGrad.addColorStop(0, "rgba(0, 0, 0, 0)");
-    rangeGrad.addColorStop(0.8, this.hexToRgba(this.color, pulse));
-    rangeGrad.addColorStop(1, this.hexToRgba(this.color, pulse + 0.1));
+    rangeGrad.addColorStop(0.8, this.hexToRgba(feedbackColor, pulse));
+    rangeGrad.addColorStop(1, this.hexToRgba(feedbackColor, pulse + 0.1));
     
     ctx.fillStyle = rangeGrad;
     ctx.fill();
     
-    ctx.strokeStyle = this.hexToRgba(this.color, 0.4);
-    ctx.setLineDash([8, 4]);
-    ctx.lineWidth = 1.5;
+    // BORDA DO ALCANCE: Fica sólida e grossa (4px) se a posição for inválida
+    ctx.strokeStyle = this.hexToRgba(feedbackColor, 0.8);
+    if (this.isDragging && isInvalidPos) {
+        ctx.lineWidth = 4;
+        ctx.setLineDash([]); // Linha sólida para erro
+    } else {
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([8, 4]); // Linha tracejada para normal/válido
+    }
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 4. SOMBRA PROJETADA (Só desenha se não estiver arrastando para não poluir)
+    // 5. SOMBRA PROJETADA (Oculta ao arrastar para foco total no alcance)
     if (!this.isDragging) {
         ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
         ctx.beginPath();
@@ -138,7 +149,7 @@ export class Tower {
         ctx.fill();
     }
 
-    // 5. BASE DA TORRE
+    // 6. BASE DA TORRE (Metal Industrial)
     const padding = tileSize * 0.15;
     const baseSize = tileSize - (padding * 2);
     
@@ -148,7 +159,7 @@ export class Tower {
     ctx.fillStyle = "#2c3e50"; 
     ctx.fillRect(x + padding + 2, y + padding + 2, baseSize - 4, baseSize - 6);
 
-    // 6. CANHÃO GIRATÓRIO
+    // 7. CANHÃO GIRATÓRIO
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.rotate(this.angle + Math.PI / 2);
@@ -159,16 +170,17 @@ export class Tower {
     ctx.fillStyle = "#1a252f"; 
     ctx.fillRect(-tileSize * 0.08, -tileSize * 0.45, tileSize * 0.16, tileSize * 0.45);
     
-    ctx.fillStyle = this.color;
+    // Bocal reflete a cor de feedback
+    ctx.fillStyle = feedbackColor;
     ctx.fillRect(-tileSize * 0.1, -tileSize * 0.48, tileSize * 0.2, tileSize * 0.08);
     ctx.restore();
 
-    // 7. CÚPULA SUPERIOR
+    // 8. CÚPULA SUPERIOR (Reflete a cor de feedback)
     const domeGrad = ctx.createRadialGradient(
         centerX - tileSize * 0.08, centerY - tileSize * 0.08, 0,
         centerX, centerY, tileSize * 0.25
     );
-    domeGrad.addColorStop(0, this.color);
+    domeGrad.addColorStop(0, feedbackColor);
     domeGrad.addColorStop(1, "#111");
 
     ctx.fillStyle = domeGrad;
@@ -176,14 +188,14 @@ export class Tower {
     ctx.arc(centerX, centerY, tileSize * 0.22, 0, Math.PI * 2);
     ctx.fill();
 
-    // Brilho de reflexo
+    // Brilho de reflexo na cúpula
     ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(centerX, centerY, tileSize * 0.18, -Math.PI/2, 0);
     ctx.stroke();
 
-    ctx.restore(); // Restaura o estado original (importante por causa do globalAlpha)
+    ctx.restore(); 
 }
 
     /**
