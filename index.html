@@ -4,69 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css">
-    <title>TD Mobile</title>
+    <title>MEGA TD</title>
 </head>
 <body>
     <div id="game-container">
-        <div id="start-screen">
-        <div class="menu-content">
-            <h1>MEGA TD</h1>
-            <p>Defenda sua base contra as hordas!</p>
-            <button id="btn-start-game">JOGAR AGORA</button>
-            <div class="instructions">
-                <span>🖱️ Clique no gramado para construir</span>
-                <span>💀 Inicie a onda quando estiver pronto</span>
+        <div id="start-screen" class="overlay">
+            <div class="menu-content">
+                <h1 class="logo-title">MEGA TD</h1>
+                <p>Defenda sua base contra as hordas!</p>
+                <button id="btn-start-game" class="btn-main-action">JOGAR AGORA</button>
+                <div class="instructions">
+                    <span>🖱️ Clique no gramado para construir</span>
+                    <span>💀 Inicie a onda quando estiver pronto</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="game-over-screen" class="overlay" style="display: none;">
-        <div class="modal-content">
-            <h1>FIM DE JOGO</h1>
-            <p>Sua Pontuação: <span id="final-score">0</span></p>
-            
-            <div id="name-input-section">
-                <input type="text" id="player-name" placeholder="Seu Nome" maxlength="10">
-                <button id="btn-save-score">SALVAR RECORDE</button>
+        <div id="level-selection-screen" class="overlay" style="display: none;">
+            <div class="menu-content">
+                <h1>Selecione a Missão</h1>
+                <div id="levels-grid"></div>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="overlay" style="display: none;">
+            <div class="modal-content">
+                <h1>FIM DE JOGO</h1>
+                <p>Sua Pontuação: <span id="final-score">0</span></p>
+                
+                <div id="name-input-section">
+                    <input type="text" id="player-name" placeholder="Seu Nome" maxlength="10">
+                    <button id="btn-save-score">SALVAR RECORDE</button>
+                </div>
+
+                <div class="high-scores-section">
+                    <h3>RECORDES</h3>
+                    <ul id="high-scores-list"></ul>
+                </div>
+
+                <button id="btn-restart" class="btn-main">JOGAR NOVAMENTE</button>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="ui-layer">
+            <div id="game-stats">
+                <div class="stat-item">
+                    <span class="icon heart"></span>
+                    <span id="label-lives">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="icon coin"></span>
+                    <span id="label-money">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="icon wave"></span>
+                    <span id="label-wave">0/0</span>
+                </div>
             </div>
 
-            <div class="high-scores-section">
-                <h3>RECORDES</h3>
-                <ul id="high-scores-list">
-                    </ul>
-            </div>
+            <button id="fab-wave-control" class="fab">
+                <div class="icon-container">
+                    <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </div>
+            </button>
 
-            <button id="btn-restart" class="btn-main">JOGAR NOVAMENTE</button>
+            <div id="tower-inventory"></div>
         </div>
     </div>
-
-    <canvas id="gameCanvas"></canvas>
-
-    <div id="ui-layer">
-    <div id="game-stats">
-        <div class="stat-item">
-            <span id="icon-heart-lives" class="icon heart"></span>
-            <span id="label-lives">500</span>
-        </div>
-        <div class="stat-item">
-            <span class="icon coin"></span>
-            <span id="label-money">345</span>
-        </div>
-        <div class="stat-item">
-            <span class="icon wave"></span>
-            <span id="label-wave">1/4</span>
-        </div>
-    </div>
-
-    <button id="fab-wave-control" class="fab">
-        <div class="icon-container">
-            <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </div>
-    </button>
-
-    <div id="tower-inventory"></div>
-</div>
 
     <script type="module" src="js/main.js"></script>
 </body>

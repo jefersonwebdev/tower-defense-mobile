@@ -1,5 +1,5 @@
 /**
- * PARTICLE.JS - Pequenos fragmentos para efeitos visuais
+ * PARTICLE.JS - Efeito de Explosão e Faíscas
  */
 export class Particle {
     constructor(x, y, color) {
@@ -7,36 +7,47 @@ export class Particle {
         this.y = y;
         this.color = color;
         
-        // Direção aleatória (360 graus)
+        // Direção aleatória (Explosão circular)
         const angle = Math.random() * Math.PI * 2;
-        // Velocidade aleatória
-        const speed = Math.random() * 0.05 + 0.02;
+        const speed = Math.random() * 2 + 1; // Velocidade variada
         
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
         
-        this.life = 1.0; // Vida da partícula (1.0 a 0.0)
-        this.decay = Math.random() * 0.03 + 0.02; // Quão rápido ela some
+        // Vida da partícula (frames)
+        this.life = 1.0; 
+        this.decay = Math.random() * 0.02 + 0.015; // Velocidade com que some
+        this.size = Math.random() * 3 + 2; // Tamanho aleatório
     }
 
     update() {
         this.x += this.vx;
         this.y += this.vy;
+        
+        // Atrito (vai parando aos poucos)
+        this.vx *= 0.95;
+        this.vy *= 0.95;
+        
+        // Diminui a vida
         this.life -= this.decay;
-        if (this.life < 0) this.life = 0;
     }
 
     draw(ctx, tileSize) {
-        ctx.globalAlpha = this.life; // Vai ficando transparente
+        if (this.life <= 0) return;
+
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        
+        // Efeito de brilho na partícula
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = this.color;
+        
         ctx.fillStyle = this.color;
+        ctx.beginPath();
+        // Desenha um pequeno quadrado ou círculo
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
         
-        const size = tileSize * 0.1;
-        ctx.fillRect(
-            this.x * tileSize + tileSize/2, 
-            this.y * tileSize + tileSize/2, 
-            size, size
-        );
-        
-        ctx.globalAlpha = 1.0; // Reseta a transparência
+        ctx.restore();
     }
 }
