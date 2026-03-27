@@ -3,6 +3,7 @@
  */
 
 import { Projectile } from './Projectile.js';
+import { SFX, playSound } from '../core/AudioManager.js'; // Ajuste o caminho conforme sua pasta
 
 export class Tower {
     /**
@@ -71,15 +72,18 @@ export class Tower {
      * Cria um novo projétil
      */
     shoot(projectilesArray) {
-        // Criamos o projétil partindo do centro da torre
-        const bullet = new Projectile(
-            this.col, 
-            this.row, 
-            this.target, 
-            this.config
-        );
-        projectilesArray.push(bullet);
-    }
+    // 1. Criamos o projétil partindo do centro da torre
+    const bullet = new Projectile(
+        this.col, 
+        this.row, 
+        this.target, 
+        this.config
+    );
+    projectilesArray.push(bullet);
+
+    // 2. Tocamos o som de tiro (SFX)
+    playSound(SFX.shoot);
+}
 
     /**
      * Renderização visual da torre

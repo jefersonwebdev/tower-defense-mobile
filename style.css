@@ -212,6 +212,7 @@ body, html {
     border: 2px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
     z-index: 1000;
+    white-space: nowrap; /* Impede que os itens quebrem linha no mobile */
 }
 
 .stat-item {
@@ -374,4 +375,184 @@ body, html {
     0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
     70% { box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); }
     100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+
+/* js/style.css */
+
+#btn-next-wave {
+    position: absolute;
+    /* Posicionamento estratégico para o polegar */
+    bottom: 20px;
+    right: 20px;
+    
+    /* Tamanho confortável para toque (mínimo 44px) */
+    padding: 15px 25px;
+    min-width: 140px;
+    
+    /* Visual de Jogo */
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    /* Sombra e Profundidade */
+    box-shadow: 0 6px 0 #1e8449, 0 8px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    z-index: 1100;
+    transition: all 0.1s active;
+    
+    /* Evita seleção de texto ao clicar rápido */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Efeito de "Pressionado" igual a botões de jogos reais */
+#btn-next-wave:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #1e8449, 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Estado Desativado (Durante a onda) */
+#btn-next-wave:disabled {
+    background: #7f8c8d;
+    box-shadow: 0 6px 0 #616a6b;
+    opacity: 0.6;
+    transform: none;
+    cursor: not-allowed;
+}
+
+#btn-next-wave {
+    position: absolute;
+    /* Posicionamento no canto inferior direito */
+    bottom: 15px;
+    right: 15px;
+    
+    /* Tamanho controlado: não deixamos ele crescer infinitamente */
+    width: 140px; 
+    height: 55px;
+    
+    /* Estilo Visual */
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+    color: white;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    
+    /* Efeito de profundidade (o "shading" da imagem) */
+    border-bottom: 4px solid #1e8449;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    
+    /* Centralização do texto interna */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    z-index: 1500;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+/* Efeito de apertar o botão */
+#btn-next-wave:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}
+
+/* Quando estiver desativado (durante a onda) */
+#btn-next-wave:disabled {
+    background: #95a5a6;
+    border-bottom: 4px solid #7f8c8d;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* style.css */
+
+.fab {
+    position: absolute;
+    bottom: 20px; /* Distância da borda inferior */
+    right: 20px;  /* Distância da borda direita */
+    width: 65px;  /* Tamanho perfeito para o polegar */
+    height: 65px;
+    
+    /* Design Redondo e Flutuante */
+    border-radius: 50%;
+    background: #2ecc71; /* Verde Google */
+    border: none;
+    
+    /* Sombras de Elevação (Material Design) */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+    
+    /* Centralização dos Ícones */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    z-index: 9999 !important; /* Coloca o botão na frente de TUDO */
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    pointer-events: auto !important; /* Força o navegador a aceitar cliques */
+
+    /* Evita seleção de texto e highlight azul no mobile */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Efeito de Clique (Pressionado) */
+.fab:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+    background: #27ae60;
+}
+
+/* Container de Ícones e Estilo dos SVGs */
+.icon-container {
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.icon-container svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    fill: white; /* Cor do ícone */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* --- Lógica Visual de Estados --- */
+
+/* Estado Padrão (Onda Parada): Mostra Play, Esconde Pause */
+.fab .icon-pause {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+}
+.fab .icon-play {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+/* Estado Ativo (Onda em Andamento): Esconde Play, Mostra Pause */
+.fab.wave-active {
+    background: #e74c3c; /* Muda para Vermelho (Stop/Pause) */
+}
+
+.fab.wave-active .icon-play {
+    opacity: 0;
+    transform: scale(0.5) rotate(90deg);
+}
+.fab.wave-active .icon-pause {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.fab * {
+    pointer-events: none;
 }

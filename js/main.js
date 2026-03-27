@@ -1,5 +1,5 @@
 /**
- * MAIN.JS - Versão Definitiva com Menu, Ondas e Efeitos
+ * MAIN.JS - Versão Final Revisada (FAB, Pause, SFX)
  */
 
 import { GRID_COLUMNS, GRID_ROWS, GAME_CONFIG } from './constants.js';
@@ -10,26 +10,28 @@ import { Tower } from './entities/Tower.js';
 import { Enemy } from './entities/Enemy.js';
 import { Particle } from './entities/Particle.js';
 import { TOWER_TYPES } from './core/TowerTypes.js';
+import { SFX, playSound } from './core/AudioManager.js';
 
 // 1. Elementos do DOM e Estado Inicial
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const startScreen = document.getElementById('start-screen');
 const btnStart = document.getElementById('btn-start-game');
-const btnNextWave = document.getElementById('btn-next-wave');
+const fabControl = document.getElementById('fab-wave-control'); // ID do FAB corrigido
 
 let gameStarted = false;
 let isGameOver = false;
+let isPaused = false; // Estado de Pause adicionado
 let money = GAME_CONFIG.STARTING_MONEY;
 let lives = GAME_CONFIG.STARTING_LIVES;
 let score = 0;
 let TILE_SIZE = 0;
 
-// Efeitos de Feedback
+// Feedback (Shake)
 let shakeTime = 0;
 let shakeIntensity = 0;
 
-// 2. Gerenciadores e Listas
+// 2. Gerenciadores
 const waveManager = new WaveManager();
 const towers = [];      
 const enemies = [];     
@@ -37,7 +39,6 @@ const projectiles = [];
 const particles = []; 
 let selectedTowerType = TOWER_TYPES.BASIC;
 
-// Configuração do Mapa e Input
 const levelData = [
     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -56,7 +57,7 @@ const waypoints = [
 ];
 
 /**
- * FUNÇÕES DE INTERFACE E EFEITOS
+ * UI E FEEDBACK
  */
 function updateUI() {
     document.getElementById('label-money').innerText = money;
@@ -83,20 +84,32 @@ function createExplosion(x, y, color) {
 }
 
 /**
- * INICIALIZAÇÃO DE BOTÕES
+ * LÓGICA DO BOTÃO FAB (PLAY/PAUSE)
+ */
+if (fabControl) {
+    fabControl.onclick = () => {
+        // Se a onda não começou, inicia
+        if (!waveManager.isWaveActive && enemies.length === 0) {
+            waveManager.startNextWave();
+            updateUI();
+            fabControl.classList.add('wave-active'); 
+            isPaused = false;
+        } 
+        // Se está em onda, alterna pause
+        else if (waveManager.isWaveActive) {
+            isPaused = !isPaused;
+            fabControl.style.background = isPaused ? '#f39c12' : ''; // Laranja se pausado
+        }
+    };
+}
+
+/**
+ * INICIALIZAÇÃO
  */
 btnStart.onclick = () => {
     gameStarted = true;
     startScreen.style.opacity = '0';
     setTimeout(() => startScreen.style.display = 'none', 500);
-};
-
-btnNextWave.onclick = () => {
-    if (!waveManager.isWaveActive && enemies.length === 0) {
-        waveManager.startNextWave();
-        updateUI();
-        btnNextWave.disabled = true;
-    }
 };
 
 function createTowerUI() {
@@ -132,18 +145,28 @@ function resizeCanvas() {
 }
 
 /**
- * LOOP PRINCIPAL
+ * GAME LOOP
  */
 function gameLoop(currentTime) {
-    if (isGameOver) return;
-    if (!gameStarted) {
+    if (isGameOver || !gameStarted) {
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    // Lógica de Pause - Congela o jogo
+    if (isPaused) {
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.font = "30px Arial Black";
+        ctx.fillText("PAUSADO", canvas.width / 2, canvas.height / 2);
         requestAnimationFrame(gameLoop);
         return;
     }
 
     ctx.save();
 
-    // Aplica Screen Shake
     if (shakeTime > 0) {
         ctx.translate((Math.random() - 0.5) * shakeIntensity, (Math.random() - 0.5) * shakeIntensity);
         shakeTime--;
@@ -152,7 +175,7 @@ function gameLoop(currentTime) {
     ctx.clearRect(-20, -20, canvas.width + 40, canvas.height + 40);
     gameMap.draw(ctx, TILE_SIZE);
 
-    // 1. Spawn de Ondas
+    // 1. Ondas
     const enemyData = waveManager.update(currentTime);
     if (enemyData) {
         const newEnemy = new Enemy(waypoints);
@@ -160,7 +183,13 @@ function gameLoop(currentTime) {
         newEnemy.speed = enemyData.speed;
         enemies.push(newEnemy);
     }
-    if (!waveManager.isWaveActive && enemies.length === 0) btnNextWave.disabled = false;
+
+    // Reset do botão quando a onda termina
+    if (!waveManager.isWaveActive && enemies.length === 0) {
+        fabControl.classList.remove('wave-active');
+        fabControl.style.background = '';
+        isPaused = false;
+    }
 
     // 2. Inimigos
     for (let i = enemies.length - 1; i >= 0; i--) {
@@ -170,23 +199,30 @@ function gameLoop(currentTime) {
 
         if (enemy.waypointIndex >= waypoints.length) {
             lives--;
+            playSound(SFX.damage);
             pulseHeart();
             triggerScreenShake();
             updateUI();
             enemies.splice(i, 1);
             if (lives <= 0) gameOver();
-        } else if (enemy.isDead) {
+            continue;
+        }
+
+        if (enemy.isDead) {
             money += GAME_CONFIG.MONEY_PER_ENEMY;
             score += 10;
+            playSound(SFX.explosion);
             createExplosion(enemy.x, enemy.y, "#e74c3c");
             updateUI();
             enemies.splice(i, 1);
         }
     }
 
-    // 3. Torres, Projéteis e Partículas
-    towers.forEach(t => t.update(currentTime, enemies, TILE_SIZE, projectiles));
-    towers.forEach(t => t.draw(ctx, TILE_SIZE));
+    // 3. Torres e Projéteis
+    towers.forEach(t => {
+        t.update(currentTime, enemies, TILE_SIZE, projectiles);
+        t.draw(ctx, TILE_SIZE);
+    });
 
     for (let i = projectiles.length - 1; i >= 0; i--) {
         projectiles[i].update(TILE_SIZE);
@@ -194,17 +230,17 @@ function gameLoop(currentTime) {
         if (projectiles[i].isDead) projectiles.splice(i, 1);
     }
 
+    // 4. Partículas
     for (let i = particles.length - 1; i >= 0; i--) {
         particles[i].update();
         particles[i].draw(ctx, TILE_SIZE);
         if (particles[i].life <= 0) particles.splice(i, 1);
     }
 
-    // 4. Construção
+    // 5. Construção
     if (input.selectedTile) {
         const { col, row } = input.selectedTile;
-        const tileType = gameMap.getTileAt(col, row);
-        if (tileType === 0) {
+        if (gameMap.getTileAt(col, row) === 0) {
             const ocupado = towers.find(t => t.col === col && t.row === row);
             const canAfford = money >= selectedTowerType.price;
             if (!ocupado && canAfford) {
@@ -224,7 +260,7 @@ function gameLoop(currentTime) {
 
 function gameOver() {
     isGameOver = true;
-    alert(`FIM DE JOGO! Pontos: ${score}`);
+    alert(`GAME OVER!\nSua pontuação: ${score}`);
     location.reload();
 }
 
