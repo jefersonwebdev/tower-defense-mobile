@@ -1,5 +1,5 @@
 /**
- * MAIN.JS - Versão Final Revisada (FAB, Pause, SFX)
+ * MAIN.JS - Versão Master: FAB, Pause, Som e Sistema de Recordes
  */
 
 import { GRID_COLUMNS, GRID_ROWS, GAME_CONFIG } from './constants.js';
@@ -17,21 +17,29 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const startScreen = document.getElementById('start-screen');
 const btnStart = document.getElementById('btn-start-game');
-const fabControl = document.getElementById('fab-wave-control'); // ID do FAB corrigido
+const fabControl = document.getElementById('fab-wave-control');
+
+// Elementos do Modal de Fim de Jogo
+const gameOverScreen = document.getElementById('game-over-screen');
+const finalScoreLabel = document.getElementById('final-score');
+const btnSaveScore = document.getElementById('btn-save-score');
+const btnRestart = document.getElementById('btn-restart');
+const playerNameInput = document.getElementById('player-name');
 
 let gameStarted = false;
 let isGameOver = false;
-let isPaused = false; // Estado de Pause adicionado
+let isPaused = false;
+let newHighScoreEntry = null; // ID temporário para destacar o recorde novo
 let money = GAME_CONFIG.STARTING_MONEY;
 let lives = GAME_CONFIG.STARTING_LIVES;
 let score = 0;
 let TILE_SIZE = 0;
 
-// Feedback (Shake)
+// Variáveis de Feedback (Shake)
 let shakeTime = 0;
 let shakeIntensity = 0;
 
-// 2. Gerenciadores
+// 2. Gerenciadores e Listas
 const waveManager = new WaveManager();
 const towers = [];      
 const enemies = [];     
@@ -39,6 +47,7 @@ const projectiles = [];
 const particles = []; 
 let selectedTowerType = TOWER_TYPES.BASIC;
 
+// Mapa e Waypoints
 const levelData = [
     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -57,21 +66,66 @@ const waypoints = [
 ];
 
 /**
+ * LÓGICA DE RECORDES (LOCAL STORAGE)
+ */
+// js/main.js
+
+function saveScore() {
+    const name = playerNameInput.value.trim() || "Anônimo";
+    const highScores = JSON.parse(localStorage.getItem('td_highscores')) || [];
+    
+    // 1. Identifica o melhor score antigo
+    const oldTopScore = highScores.length > 0 ? highScores[0].score : 0;
+    
+    // 2. Cria o novo registro com um ID único (timestamp) para podermos destacar
+    const newEntryId = Date.now(); 
+    highScores.push({ id: newEntryId, name, score });
+    
+    // 3. Ordena e limita o Top 5
+    highScores.sort((a, b) => b.score - a.score);
+    const topScores = highScores.slice(0, 5);
+    
+    // 4. Salva de volta
+    localStorage.setItem('td_highscores', JSON.stringify(topScores));
+    
+    // 5. Verifica se o novo score é maior que o antigo melhor
+    if (score > oldTopScore) {
+        newHighScoreEntry = newEntryId; // Marca este ID para brilhar
+        playSound(SFX.victory); // Toca som de vitória (se você tiver)
+    }
+
+    document.getElementById('name-input-section').style.display = 'none';
+    displayHighScores();
+}
+
+// js/main.js
+
+function displayHighScores() {
+    const list = document.getElementById('high-scores-list');
+    const highScores = JSON.parse(localStorage.getItem('td_highscores')) || [];
+    
+    list.innerHTML = highScores.map(entry => {
+        // Verifica se esta entrada é o recorde novo que deve brilhar
+        const isNewRecord = entry.id === newHighScoreEntry;
+        const glowClass = isNewRecord ? 'class="new-high-score-glow"' : '';
+        
+        return `<li ${glowClass}>
+                  <span>${entry.name}</span>
+                  <strong>${entry.score} pts</strong>
+                </li>`;
+    }).join('');
+    
+    // Reseta o ID após exibir, para não brilhar nas próximas vezes que abrir
+    newHighScoreEntry = null; 
+}
+
+/**
  * UI E FEEDBACK
  */
 function updateUI() {
     document.getElementById('label-money').innerText = money;
     document.getElementById('label-lives').innerText = lives;
     document.getElementById('label-wave').innerText = `${waveManager.currentWave}/10`;
-}
-
-function pulseHeart() {
-    const heartIcon = document.getElementById('icon-heart-lives');
-    if (heartIcon) {
-        heartIcon.classList.remove('damage-taken');
-        void heartIcon.offsetWidth; 
-        heartIcon.classList.add('damage-taken');
-    }
 }
 
 function triggerScreenShake(duration = 15, intensity = 8) {
@@ -84,33 +138,28 @@ function createExplosion(x, y, color) {
 }
 
 /**
- * LÓGICA DO BOTÃO FAB (PLAY/PAUSE)
- */
-if (fabControl) {
-    fabControl.onclick = () => {
-        // Se a onda não começou, inicia
-        if (!waveManager.isWaveActive && enemies.length === 0) {
-            waveManager.startNextWave();
-            updateUI();
-            fabControl.classList.add('wave-active'); 
-            isPaused = false;
-        } 
-        // Se está em onda, alterna pause
-        else if (waveManager.isWaveActive) {
-            isPaused = !isPaused;
-            fabControl.style.background = isPaused ? '#f39c12' : ''; // Laranja se pausado
-        }
-    };
-}
-
-/**
- * INICIALIZAÇÃO
+ * INICIALIZAÇÃO E EVENTOS
  */
 btnStart.onclick = () => {
     gameStarted = true;
     startScreen.style.opacity = '0';
     setTimeout(() => startScreen.style.display = 'none', 500);
 };
+
+fabControl.onclick = () => {
+    if (!waveManager.isWaveActive && enemies.length === 0) {
+        waveManager.startNextWave();
+        updateUI();
+        fabControl.classList.add('wave-active');
+        isPaused = false;
+    } else if (waveManager.isWaveActive) {
+        isPaused = !isPaused;
+        fabControl.style.background = isPaused ? '#f39c12' : '';
+    }
+};
+
+btnSaveScore.onclick = saveScore;
+btnRestart.onclick = () => location.reload();
 
 function createTowerUI() {
     const menu = document.getElementById('tower-inventory');
@@ -145,7 +194,7 @@ function resizeCanvas() {
 }
 
 /**
- * GAME LOOP
+ * LOOP PRINCIPAL
  */
 function gameLoop(currentTime) {
     if (isGameOver || !gameStarted) {
@@ -153,20 +202,18 @@ function gameLoop(currentTime) {
         return;
     }
 
-    // Lógica de Pause - Congela o jogo
     if (isPaused) {
         ctx.fillStyle = "rgba(0,0,0,0.3)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
-        ctx.textAlign = "center";
         ctx.font = "30px Arial Black";
+        ctx.textAlign = "center";
         ctx.fillText("PAUSADO", canvas.width / 2, canvas.height / 2);
         requestAnimationFrame(gameLoop);
         return;
     }
 
     ctx.save();
-
     if (shakeTime > 0) {
         ctx.translate((Math.random() - 0.5) * shakeIntensity, (Math.random() - 0.5) * shakeIntensity);
         shakeTime--;
@@ -175,7 +222,7 @@ function gameLoop(currentTime) {
     ctx.clearRect(-20, -20, canvas.width + 40, canvas.height + 40);
     gameMap.draw(ctx, TILE_SIZE);
 
-    // 1. Ondas
+    // 1. Ondas e Reset do FAB
     const enemyData = waveManager.update(currentTime);
     if (enemyData) {
         const newEnemy = new Enemy(waypoints);
@@ -184,7 +231,6 @@ function gameLoop(currentTime) {
         enemies.push(newEnemy);
     }
 
-    // Reset do botão quando a onda termina
     if (!waveManager.isWaveActive && enemies.length === 0) {
         fabControl.classList.remove('wave-active');
         fabControl.style.background = '';
@@ -200,7 +246,6 @@ function gameLoop(currentTime) {
         if (enemy.waypointIndex >= waypoints.length) {
             lives--;
             playSound(SFX.damage);
-            pulseHeart();
             triggerScreenShake();
             updateUI();
             enemies.splice(i, 1);
@@ -260,8 +305,9 @@ function gameLoop(currentTime) {
 
 function gameOver() {
     isGameOver = true;
-    alert(`GAME OVER!\nSua pontuação: ${score}`);
-    location.reload();
+    finalScoreLabel.innerText = score;
+    gameOverScreen.style.display = 'flex';
+    displayHighScores();
 }
 
 window.addEventListener('resize', resizeCanvas);
