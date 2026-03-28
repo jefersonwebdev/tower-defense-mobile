@@ -1,7 +1,7 @@
 /**
  * UIMANAGER.JS - Gerenciamento de Interfaces e Menus
  */
-
+import { Tower } from '../entities/Tower.js'; // Caminho atualizado
 import { LEVELS } from './Levels.js';
 import { TOWER_TYPES } from './TowerTypes.js';
 
@@ -38,41 +38,43 @@ export const UIManager = {
      * @param {Function} onSelect - Callback disparado ao clicar
      */
     createTowerButtons(selectedType, onSelect) {
-        const container = document.getElementById('tower-inventory');
-        if (!container) return;
+    const container = document.getElementById('tower-inventory');
+    if (!container) return;
 
-        container.innerHTML = ''; // Limpa para atualizar o estado visual
+    container.innerHTML = ''; 
 
-        Object.keys(TOWER_TYPES).forEach(key => {
-            const type = TOWER_TYPES[key];
-            const btn = document.createElement('button');
-            
-            // Verifica se este botão é o que está selecionado no momento
-            const isSelected = selectedType && selectedType.name === type.name;
-            
-            btn.className = `tower-btn ${isSelected ? 'selected' : ''}`;
-            btn.style.setProperty('--tower-color', type.color); // Para o brilho no CSS
-            
-            btn.innerHTML = `
-                <div class="tower-icon" style="background-color: ${type.color}"></div>
-                <div class="tower-details">
-                    <strong>${type.name.toUpperCase()}</strong>
-                    <span>$${type.price}</span>
-                </div>
-            `;
+    Object.keys(TOWER_TYPES).forEach(key => {
+        const type = TOWER_TYPES[key];
+        const btn = document.createElement('button');
+        
+        const isSelected = selectedType && selectedType.name === type.name;
+        
+        // --- NOVIDADE: GERAÇÃO DO ÍCONE ---
+        // Usamos o método estático da classe Tower para pegar o design industrial
+        const iconUrl = Tower.generateStaticIcon(type, 64); 
+        
+        btn.className = `tower-btn ${isSelected ? 'selected' : ''}`;
+        btn.style.setProperty('--tower-color', type.color); 
+        
+        btn.innerHTML = `
+            <div class="tower-icon-container">
+                <img src="${iconUrl}" class="tower-icon-render" alt="${type.name}">
+            </div>
+            <div class="tower-details">
+                <strong>${type.name.toUpperCase()}</strong>
+                <span>$${type.price}</span>
+            </div>
+        `;
 
-            btn.onclick = () => {
-                // Se clicar em um já selecionado, deseleciona (Toggle)
-                const newSelection = isSelected ? null : type;
-                onSelect(newSelection);
-                
-                // Re-renderiza para atualizar as bordas (feedback visual)
-                this.createTowerButtons(newSelection, onSelect);
-            };
+        btn.onclick = () => {
+            const newSelection = isSelected ? null : type;
+            onSelect(newSelection);
+            this.createTowerButtons(newSelection, onSelect);
+        };
 
-            container.appendChild(btn);
-        });
-    },
+        container.appendChild(btn);
+    });
+},
 
     /**
      * Atualiza os textos do HUD durante a gameplay

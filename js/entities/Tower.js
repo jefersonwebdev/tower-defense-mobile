@@ -207,4 +207,70 @@ export class Tower {
         const b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
+
+    /**
+ * Gera uma imagem Base64 do design da torre para ser usada em elementos HTML
+ */
+static generateStaticIcon(config, size = 64) {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = size;
+    tempCanvas.height = size;
+    const ctx = tempCanvas.getContext('2d');
+    const tileSize = size;
+    
+    // Simula as coordenadas centrais para o desenho
+    const centerX = size / 2;
+    const centerY = size / 2;
+    const x = 0;
+    const y = 0;
+    const feedbackColor = config.color || "#3498db";
+
+    // Reutilizamos a lógica visual do seu método draw (simplificada para ícone estático)
+    ctx.save();
+
+    // 6. BASE (Copiado do seu draw)
+    const padding = tileSize * 0.15;
+    const baseSize = tileSize - (padding * 2);
+    ctx.fillStyle = "#1a252f"; 
+    ctx.fillRect(x + padding, y + padding, baseSize, baseSize);
+    ctx.fillStyle = "#2c3e50"; 
+    ctx.fillRect(x + padding + 2, y + padding + 2, baseSize - 4, baseSize - 6);
+
+    // 7. CANHÃO (Ângulo fixo para cima para o botão)
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(0); // Apontando para cima no ícone
+    ctx.fillStyle = "#34495e";
+    ctx.fillRect(-tileSize * 0.15, -tileSize * 0.1, tileSize * 0.3, tileSize * 0.2);
+    ctx.fillStyle = "#1a252f"; 
+    ctx.fillRect(-tileSize * 0.08, -tileSize * 0.45, tileSize * 0.16, tileSize * 0.45);
+    ctx.fillStyle = feedbackColor;
+    ctx.fillRect(-tileSize * 0.1, -tileSize * 0.48, tileSize * 0.2, tileSize * 0.08);
+    ctx.restore();
+
+    // 8. CÚPULA SUPERIOR
+    const domeGrad = ctx.createRadialGradient(
+        centerX - tileSize * 0.08, centerY - tileSize * 0.08, 0,
+        centerX, centerY, tileSize * 0.25
+    );
+    domeGrad.addColorStop(0, feedbackColor);
+    domeGrad.addColorStop(1, "#111");
+    ctx.fillStyle = domeGrad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, tileSize * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Reflexo
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, tileSize * 0.18, -Math.PI/2, 0);
+    ctx.stroke();
+
+    ctx.restore();
+
+    return tempCanvas.toDataURL(); // Retorna a string da imagem
 }
+}
+
+
