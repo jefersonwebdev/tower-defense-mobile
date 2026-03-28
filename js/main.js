@@ -374,15 +374,32 @@ window.closeVictoryModal = closeVictoryModal;
 function handleBuildLogic() {
     if (input.selectedTile && selectedTowerType) {
         const { col, row } = input.selectedTile;
+        
+        // Verifica se é grama (tile 0)
         if (gameMap.getTileAt(col, row) === 0) {
             const ocupado = towers.find(t => t.col === col && t.row === row);
+            
+            // Verifica ocupação e se o jogador tem o dinheiro necessário
             if (!ocupado && money >= selectedTowerType.price) {
+                // 1. Cria a nova torre
                 towers.push(new Tower(col, row, selectedTowerType));
+                
+                // 2. Cobra o preço
                 money -= selectedTowerType.price;
+                
+                // 3. Reseta a seleção para não construir várias em sequência sem querer
                 selectedTowerType = null; 
-                UIManager.createTowerButtons(null, (t) => selectedTowerType = t);
+                
+                // 4. ATUALIZAÇÃO CRUCIAL: 
+                // Chamamos o updateHUD que, por sua vez, deve chamar o 
+                // UIManager.createTowerButtons(money, ...) para atualizar as cores dos botões
                 updateHUD();
+                
+                // 5. Limpa a seleção do clique/input
                 input.clearSelection();
+
+                // Dica: Tocar um som de construção aqui ficaria ótimo!
+                // playSound(SFX.build); 
             }
         }
     }
@@ -432,8 +449,20 @@ function setupGlobalEvents() {
     };
 }
 
+/**
+ * ATUALIZA HUD E LOJA EM TEMPO REAL
+ */
 function updateHUD() {
+    // 1. Atualiza textos (Moeda, Vidas, Waves)
     UIManager.updateHUD(money, lives, waveManager.currentWave, waveManager.totalWaves);
+
+    // 2. Atualiza a loja para refletir se o jogador pode comprar as torres
+    // Passamos o dinheiro atual, o tipo selecionado e a função de callback
+    UIManager.createTowerButtons(money, selectedTowerType, (type) => {
+        selectedTowerType = type;
+        // Opcional: tocar som de clique ao selecionar
+        // playSound(SFX.click); 
+    });
 }
 
 function resizeCanvas() {

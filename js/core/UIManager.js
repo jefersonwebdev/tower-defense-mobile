@@ -34,10 +34,12 @@ export const UIManager = {
 
     /**
      * Cria os botões de inventário de torres
-     * @param {Object|null} selectedType - A torre atualmente selecionada (ou null para reset)
-     * @param {Function} onSelect - Callback disparado ao clicar
-     */
-    createTowerButtons(selectedType, onSelect) {
+     /**
+ * @param {number} playerMoney - Dinheiro atual do jogador
+ * @param {Object|null} selectedType - Torre selecionada
+ * @param {Function} onSelect - Callback
+ */
+createTowerButtons(playerMoney, selectedType, onSelect) {
     const container = document.getElementById('tower-inventory');
     if (!container) return;
 
@@ -48,28 +50,31 @@ export const UIManager = {
         const btn = document.createElement('button');
         
         const isSelected = selectedType && selectedType.name === type.name;
+        const canAfford = playerMoney >= type.price; // VERIFICAÇÃO DE DINHEIRO
         
-        // --- NOVIDADE: GERAÇÃO DO ÍCONE ---
-        // Usamos o método estático da classe Tower para pegar o design industrial
         const iconUrl = Tower.generateStaticIcon(type, 64); 
         
-        btn.className = `tower-btn ${isSelected ? 'selected' : ''}`;
+        // Adicionamos a classe 'disabled' se não tiver dinheiro
+        btn.className = `tower-btn ${isSelected ? 'selected' : ''} ${!canAfford ? 'disabled' : ''}`;
         btn.style.setProperty('--tower-color', type.color); 
         
         btn.innerHTML = `
-            <div class="tower-icon-container">
-                <img src="${iconUrl}" class="tower-icon-render" alt="${type.name}">
+            <div class="tower-icon-frame">
+                <img src="${iconUrl}" class="tower-render-img">
             </div>
             <div class="tower-details">
                 <strong>${type.name.toUpperCase()}</strong>
-                <span>$${type.price}</span>
+                <span class="price-tag">$${type.price}</span>
             </div>
         `;
 
+        // Só permite clicar se tiver dinheiro (ou se for para deselecionar)
         btn.onclick = () => {
+            if (!canAfford && !isSelected) return; 
+            
             const newSelection = isSelected ? null : type;
             onSelect(newSelection);
-            this.createTowerButtons(newSelection, onSelect);
+            this.createTowerButtons(playerMoney, newSelection, onSelect);
         };
 
         container.appendChild(btn);

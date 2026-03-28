@@ -1254,3 +1254,30 @@ body, html {
     box-shadow: 0 0 10px var(--tower-color);
     background-color: rgba(255, 255, 255, 0.05);
 }
+
+
+/* Estado desabilitado (sem dinheiro) */
+.tower-btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.tower-btn.disabled .tower-render-img {
+    filter: grayscale(1) brightness(0.5); /* Fica cinza e escuro */
+}
+
+.tower-btn.disabled .price-tag {
+    color: #ff4757; /* Preço fica vermelho */
+    font-weight: bold;
+}
+
+/* Efeito de "sacudir" ao clicar sem dinheiro (opcional) */
+.tower-btn.disabled:active {
+    animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
