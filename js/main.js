@@ -1,7 +1,7 @@
 /**
  * MAIN.JS - Versão Final com Sistema de Estrelas e Progressão
  */
-
+import { SFX, playSound } from './core/AudioManager.js';
 import { GAME_CONFIG } from './constants.js';
 import { Map } from './core/Map.js';
 import { Input } from './core/Input.js';
@@ -66,9 +66,11 @@ function init() {
 function renderLevelMap() {
     const map = document.getElementById('levels-map');
     if (!map) return;
+    
+    // 1. Limpa o mapa para evitar duplicatas ao re-renderizar
     map.innerHTML = ''; 
 
-    // Coordenadas para espalhar as fases na vertical do celular
+    // Coordenadas para espalhar as fases na vertical do celular (ajuste se necessário)
     const coords = [
         { x: 25, y: 85 }, // Fase 1
         { x: 70, y: 75 }, // Fase 2
@@ -78,55 +80,72 @@ function renderLevelMap() {
         { x: 80, y: 15 }  // Fase 6
     ];
 
+    // 2. Itera sobre os níveis vindos do LevelManager
     Object.values(levelManager.levels).forEach((lvl, index) => {
         const pos = coords[index] || { x: 50, y: 50 };
         const node = document.createElement('div');
         
-        // Define se a fase está aberta ou trancada
-        node.className = `level-node ${lvl.unlocked ? 'unlocked' : 'locked'}`;
+        // Define as classes base: 'unlocked' ou 'locked' + ID da fase para animação
+        node.className = `level-node ${lvl.unlocked ? 'unlocked' : 'locked'} level-${lvl.id}`;
         
-        // Aplica o posicionamento via CSS Inline
+        // Aplica o posicionamento via CSS Inline (X e Y em porcentagem)
         node.style.left = pos.x + '%';
         node.style.top = pos.y + '%';
 
         if (lvl.unlocked) {
+            // --- LÓGICA DE FASE ABERTA ---
+            
             // Cria o container de estrelas
             let starsHTML = '<div class="node-stars">';
             const starsConquered = lvl.stars || 0;
 
-            // Gera sempre 3 estrelas, mudando a classe conforme a conquista
+            // Gera as 3 estrelas (preenchendo as conquistadas)
             for (let i = 1; i <= 3; i++) {
                 const statusClass = i <= starsConquered ? 'active' : 'inactive';
                 starsHTML += `<span class="star ${statusClass}"></span>`;
             }
             starsHTML += '</div>';
 
-            // Insere as estrelas e o número da fase
-            node.innerHTML = `${starsHTML} <span class="level-number">${lvl.id}</span>`;
+            // Conteúdo: Estrelas + Número da Fase
+            node.innerHTML = `
+                ${starsHTML} 
+                <span class="level-number">${lvl.id}</span>
+            `;
+            
+            // Evento de clique para entrar na fase
             node.onclick = () => startLevel(lvl.id);
+
         } else {
-            // Ícone para fase trancada
-            node.innerHTML = '<span class="lock-icon"></span>';
+            // --- LÓGICA DE FASE TRANQUADA ---
+            
+            // Estrutura preparada para a animação de "Cadeado Abrindo"
+            node.innerHTML = `
+                <div class="lock-wrapper">
+                    <span class="lock-icon"></span>
+                </div>
+                <span class="level-number" style="display: none;">${lvl.id}</span>
+            `;
+            
+            // Fase trancada não tem onclick
+            node.onclick = null;
         }
 
+        // Adiciona o nó ao container do mapa
         map.appendChild(node);
     });
 
-    // Atualiza o contador global no topo da tela
-    const totalStarsElem = document.getElementById('total-stars-count');
-    if (totalStarsElem) {
-        totalStarsElem.innerText = levelManager.getTotalStars();
-    }
-
-    // 1. Pega os valores do LevelManager
+    // 3. ATUALIZAÇÃO DOS CONTADORES GLOBAIS (HUD DO MAPA)
     const currentStars = levelManager.getTotalStars();
     const maxStars = levelManager.getMaxPossibleStars();
 
-    // 2. Seleciona o elemento do placar
+    // Atualiza o número de estrelas no elemento específico (se existir)
+    const totalStarsElem = document.getElementById('total-stars-count');
+    if (totalStarsElem) {
+        totalStarsElem.innerText = currentStars;
+    }
+
+    // Atualiza a exibição completa "Atual / Total"
     const starsDisplay = document.querySelector('.stars-display');
-    
-    // 3. Atualiza o conteúdo mantendo o ID para o número atual
-    // e preenchendo o total de forma dinâmica
     if (starsDisplay) {
         starsDisplay.innerHTML = `
             <span id="total-stars-count">${currentStars}</span>/ ${maxStars}
@@ -275,10 +294,23 @@ function handleVictory() {
     // 1. Calcula as estrelas com base na vida atual vs máxima
     const starsEarned = levelManager.calculateStars(lives, globalMaxLives);
     
-    // 2. Salva o progresso no LevelManager (desbloqueia próxima fase)
+    // --- ADIÇÃO PARA ANIMAÇÃO ---
+    // Verifica se a próxima fase estava trancada antes de processar a vitória
+    const nextLevelId = currentLevelId + 1;
+    const nextLevel = levelManager.levels[nextLevelId];
+    
+    // Se a próxima fase existe e ainda está trancada, marcamos para animar
+    if (nextLevel && !nextLevel.unlocked) {
+        window.levelToAnimate = nextLevelId;
+    } else {
+        window.levelToAnimate = null;
+    }
+    // ----------------------------
+
+    // 2. Salva o progresso no LevelManager (isso muda o status da próxima fase para unlocked no DATA)
     levelManager.processWin(currentLevelId, starsEarned);
     
-    // 3. Prepara o Modal de Vitória
+    // 3. Prepara o Modal de Vitória (Visual)
     const starsContainer = document.getElementById('modal-stars');
     const modalMsg = document.getElementById('modal-msg');
     
@@ -287,9 +319,9 @@ function handleVictory() {
         
         for (let i = 1; i <= 3; i++) {
             const star = document.createElement('div');
-            // Usa as classes CSS que configuramos com SVGs
+            // Define a classe active para as estrelas ganhas
             star.className = `star ${i <= starsEarned ? 'active' : 'inactive'}`;
-            // Adiciona um pequeno atraso para a animação de "pop" em cascata
+            // Delay cascata para a animação das estrelas no modal
             star.style.animationDelay = `${i * 0.15}s`; 
             starsContainer.appendChild(star);
         }
@@ -307,14 +339,29 @@ function handleVictory() {
 // Função para o botão "Continuar" do Modal
 // Função para fechar o modal e IR para a seleção de fases
 export function closeVictoryModal() {
-    // 1. Esconde o modal
     document.getElementById('victory-modal').style.display = 'none';
-    
-    // 2. Muda para a tela de seleção de fases
     showScreen('level-select-screen');
-    
-    // 3. Atualiza o mapa (estrelas e cadeados)
     renderLevelMap();
+
+    if (window.levelToAnimate) {
+        const nextId = window.levelToAnimate;
+        
+        setTimeout(() => {
+            const node = document.querySelector(`.level-${nextId}`);
+            if (node) {
+                node.classList.add('unlock-animation');
+                
+                // TOCA O SOM AQUI 🔊
+                playSound(SFX.unlock);
+
+                window.levelToAnimate = null;
+
+                setTimeout(() => {
+                    renderLevelMap();
+                }, 900); 
+            }
+        }, 100); 
+    }
 }
 
 // IMPORTANTE: Torne-as globais para o HTML (onclick) funcionar!

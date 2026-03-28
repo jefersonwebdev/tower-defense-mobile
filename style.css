@@ -1186,3 +1186,43 @@ body, html {
 .modal-stars-container .star.active {
     animation: popIn 0.5s ease forwards;
 }
+
+
+/* Estado Base: Trancado (Mantenha assim) */
+.level-node.locked {
+    
+    filter: grayscale(1);
+    opacity: 0.8;
+    transition: all 0.5s ease;
+}
+
+/* Container do cadeado (Mantenha assim) */
+.lock-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+}
+
+/* CLASSE DE ANIMAÇÃO (O Segredo está no "forwards" e na especificidade) */
+.level-node.unlock-animation {
+    animation: unlockPulse 0.8s ease-in-out forwards !important;
+    filter: grayscale(0) !important;
+    background-color: #4CAF50 !important; /* Cor da fase aberta */
+    opacity: 1 !important;
+    z-index: 999;
+}
+
+/* Faz o cadeado sumir enquanto a bolinha pulsa */
+.level-node.unlock-animation .lock-wrapper {
+    transform: scale(2);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+/* Pulso de brilho (Ajustado para não quebrar o centro) */
+@keyframes unlockPulse {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); box-shadow: 0 0 30px #fff; }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
