@@ -3,6 +3,30 @@
  * Altere os valores abaixo para ajustar o equilíbrio e o visual do jogo.
  */
 
+
+
+// js/constants.js
+
+export const LEVELS = {
+    1: { 
+        id: 1, 
+        unlocked: true, 
+        stars: 0, 
+        startingMoney: 150,
+        // ... o restante dos dados da fase 1
+    },
+    2: { 
+        id: 2, 
+        unlocked: false, 
+        stars: 0, 
+        startingMoney: 200,
+        // ... o restante dos dados da fase 2
+    }
+    // Adicione as outras fases...
+};
+
+
+
 // --- CONFIGURAÇÕES DE TELA E GRADE ---
 export const GRID_COLUMNS = 10; // Quantas colunas o mapa terá
 export const GRID_ROWS = 15;    // Quantas linhas o mapa terá (mais alto para o modo Portrait de telemóvel)

@@ -20,12 +20,35 @@
             </div>
         </div>
 
-        <div id="level-selection-screen" class="overlay" style="display: none;">
-            <div class="menu-content">
-                <h1>Selecione a Missão</h1>
-                <div id="levels-grid"></div>
+        <div id="level-select-screen" class="screen" style="display: none;">
+            <div class="level-header">
+                <button class="btn-back" onclick="showScreen('main-menu')"></button>
+                <div class="stars-display"><span id="total-stars-count">0</span>/90</div>
+                <h1>LEVEL SELECT</h1>
             </div>
+
+            <div id="levels-map" class="map-container"></div>
+
+        <div class="footer-controls">
+            <button class="btn-footer btn-upgrade" onclick="showScreen('upgrade-screen')">
+                UPGRADE
+            </button>
+            <button class="btn-footer btn-help" onclick="showScreen('help-screen')">
+                HELP
+            </button>
         </div>
+    </div>
+
+
+<div id="victory-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modal-title">VITÓRIA!</h2>
+        <div id="modal-stars" class="modal-stars-container">
+            </div>
+        <p id="modal-msg">Fase Concluída!</p>
+        <button class="btn-footer" onclick="closeVictoryModal()">CONTINUAR</button>
+    </div>
+</div>
 
         <div id="game-over-screen" class="overlay" style="display: none;">
             <div class="modal-content">

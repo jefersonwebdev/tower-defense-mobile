@@ -8,6 +8,101 @@ export const LEVELS = [
         name: "Planície Verde",
         description: "Uma rota simples para iniciantes.",
         startingMoney: 100,
+        totalWaves: 1,
+        // O sistema vai converter esse desenho em matriz automaticamente
+        mapLayout: `
+            0 1 0 0 0 0 0 0 0 0
+            0 1 0 0 0 0 1 1 1 0
+            0 1 1 1 1 0 1 0 1 0
+            0 0 0 0 1 0 1 0 1 0
+            0 0 0 0 1 1 1 0 1 0
+            0 0 0 0 0 0 0 0 1 0
+            0 0 0 0 0 0 1 1 1 0
+            0 1 1 1 1 1 1 0 0 0
+            0 1 0 0 0 0 0 0 0 0
+            0 1 1 1 1 1 1 1 0 0
+            0 0 0 0 0 0 0 1 0 0
+            0 0 1 1 1 1 1 1 0 0
+            0 0 1 0 0 0 0 0 0 0
+            0 0 1 1 1 1 1 1 1 2
+            0 0 0 0 0 0 0 0 0 0
+        `,
+        waypoints: [
+    {x: 1.5, y: 0.5},  // Entrada (Topo)
+    {x: 1.5, y: 2.5},  // Primeira curva (Direita)
+    {x: 4.5, y: 2.5},  // Segunda curva (Baixo)
+    {x: 4.5, y: 4.5},  // Terceira curva (Direita)
+    {x: 6.5, y: 4.5},  // Quarta curva (Cima) -> Você tinha pulado esta!
+    {x: 6.5, y: 1.5},  // Quinta curva (Direita)
+    {x: 8.5, y: 1.5},  // Sexta curva (Baixo)
+    {x: 8.5, y: 6.5},  // Sétima curva (Esquerda)
+    {x: 6.5, y: 6.5},  // Oitava curva (Baixo)
+    {x: 6.5, y: 7.5},  // Nona curva (Esquerda)
+    {x: 1.5, y: 7.5},  // Décima curva (Baixo)
+    {x: 1.5, y: 9.5},  // 11ª curva (Direita)
+    {x: 7.5, y: 9.5},  // 12ª curva (Baixo)
+    {x: 7.5, y: 11.5}, // 13ª curva (Esquerda) -> Refletindo o grid
+    {x: 2.5, y: 11.5}, // 14ª curva (Baixo)
+    {x: 2.5, y: 13.5}, // 15ª curva (Direita final)
+    {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
+],
+        // Configuração de Inimigos por Onda
+        waveLogic: [
+            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
+            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
+            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
+        ]
+    },
+    {
+    id: 2,
+    name: "Deserto de Fogo",
+    description: "Inimigos rápidos e pouco dinheiro.",
+    startingMoney: 100,
+    totalWaves: 1,
+    mapLayout: `
+        0 0 0 1 0 0 2 0 0 0
+        0 0 0 1 0 0 1 0 0 0
+        0 1 1 1 0 0 1 1 1 0
+        0 1 0 0 0 0 0 0 1 0
+        0 1 0 1 1 1 1 0 1 0
+        0 1 0 1 0 0 1 0 1 0
+        0 1 1 1 0 0 1 0 1 0
+        0 0 0 0 0 0 1 0 1 0
+        0 1 1 1 1 1 1 0 1 0
+        0 1 0 0 0 0 0 0 1 0
+        0 1 0 0 0 0 0 0 1 0
+        0 1 0 0 0 0 0 0 1 0
+        0 1 0 0 0 0 0 0 1 0
+        0 1 1 1 1 1 1 1 1 0
+        0 0 0 0 0 0 0 0 0 0
+    `,
+    waypoints: [
+        {x: 3.5, y: 0.5},  // Entrada (Topo Coluna 3)
+        {x: 3.5, y: 2.5},  // Desce até encontrar a curva horizontal
+        {x: 1.5, y: 2.5},  // Vira para a esquerda (Coluna 1)
+        {x: 1.5, y: 6.5},  // Desce o corredor esquerdo até a curva da Linha 6
+        {x: 3.5, y: 6.5},  // Vira para a direita (Coluna 3)
+        {x: 3.5, y: 4.5},  // Sobe o mini-retorno (Linha 4)
+        {x: 6.5, y: 4.5},  // Atravessa para a direita (Coluna 6)
+        {x: 6.5, y: 8.5},  // Desce pelo meio (Linha 8)
+        {x: 1.5, y: 8.5},  // Vira para a esquerda de novo (Coluna 1)
+        {x: 1.5, y: 13.5}, // Desce o último paredão esquerdo (Linha 13)
+        {x: 8.5, y: 13.5}, // Atravessa a base inteira (Coluna 8)
+        {x: 8.5, y: 2.5},  // Sobe o paredão direito inteiro (Linha 2)
+        {x: 6.5, y: 2.5},  // Vira para a esquerda para alinhar com o '2'
+        {x: 6.5, y: 0.5}   // FIM (Sobe para o '2' na Coluna 6)
+    ],
+    waveLogic: [
+        { startWave: 1, types: ['FAST'], spawnRate: 1000 },
+        { startWave: 5, types: ['FAST', 'BASIC'], spawnRate: 800 },
+        { startWave: 10, types: ['TANK'], spawnRate: 1200 }
+    ]
+},
+{
+        id: 3,
+        name: "Planície Verde",
+        description: "Uma rota simples para iniciantes.",
+        startingMoney: 100,
         totalWaves: 10,
         // O sistema vai converter esse desenho em matriz automaticamente
         mapLayout: `
@@ -28,9 +123,24 @@ export const LEVELS = [
             0 0 0 0 0 0 0 0 0 0
         `,
         waypoints: [
-            {x: 1.5, y: 0.5}, {x: 1.5, y: 2.5}, {x: 4.5, y: 2.5}, {x: 4.5, y: 4.5}, 
-            {x: 7.5, y: 4.5}, {x: 7.5, y: 7.5}, {x: 1.5, y: 7.5}, {x: 1.5, y: 9.5}, {x: 9.5, y: 9.5}
-        ],
+    {x: 1.5, y: 0.5},  // Entrada (Topo)
+    {x: 1.5, y: 2.5},  // Primeira curva (Direita)
+    {x: 4.5, y: 2.5},  // Segunda curva (Baixo)
+    {x: 4.5, y: 4.5},  // Terceira curva (Direita)
+    {x: 6.5, y: 4.5},  // Quarta curva (Cima) -> Você tinha pulado esta!
+    {x: 6.5, y: 1.5},  // Quinta curva (Direita)
+    {x: 8.5, y: 1.5},  // Sexta curva (Baixo)
+    {x: 8.5, y: 6.5},  // Sétima curva (Esquerda)
+    {x: 6.5, y: 6.5},  // Oitava curva (Baixo)
+    {x: 6.5, y: 7.5},  // Nona curva (Esquerda)
+    {x: 1.5, y: 7.5},  // Décima curva (Baixo)
+    {x: 1.5, y: 9.5},  // 11ª curva (Direita)
+    {x: 7.5, y: 9.5},  // 12ª curva (Baixo)
+    {x: 7.5, y: 11.5}, // 13ª curva (Esquerda) -> Refletindo o grid
+    {x: 2.5, y: 11.5}, // 14ª curva (Baixo)
+    {x: 2.5, y: 13.5}, // 15ª curva (Direita final)
+    {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
+],
         // Configuração de Inimigos por Onda
         waveLogic: [
             { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
@@ -39,36 +149,155 @@ export const LEVELS = [
         ]
     },
     {
-        id: 2,
-        name: "Deserto de Fogo",
-        description: "Inimigos rápidos e pouco dinheiro.",
+        id: 4,
+        name: "Planície Verde",
+        description: "Uma rota simples para iniciantes.",
         startingMoney: 100,
         totalWaves: 10,
+        // O sistema vai converter esse desenho em matriz automaticamente
         mapLayout: `
-            0 0 0 1 0 0 2 0 0 0
-            0 0 0 1 0 0 1 0 0 0
-            0 1 1 1 0 0 1 1 1 0
-            0 1 0 0 0 0 0 0 1 0
-            0 1 0 1 1 1 1 0 1 0
-            0 1 0 1 0 0 1 0 1 0
-            0 1 1 1 0 0 1 0 1 0
-            0 0 0 0 0 0 1 0 1 0
-            0 1 1 1 1 1 1 0 1 0
-            0 1 0 0 0 0 0 0 1 0
-            0 1 0 0 0 0 0 0 1 0
-            0 1 0 0 0 0 0 0 1 0
-            0 1 0 0 0 0 0 0 1 0
-            0 1 1 1 1 1 1 1 1 0
+            0 1 0 0 0 0 0 0 0 0
+            0 1 0 0 0 0 1 1 1 0
+            0 1 1 1 1 0 1 0 1 0
+            0 0 0 0 1 0 1 0 1 0
+            0 0 0 0 1 1 1 0 1 0
+            0 0 0 0 0 0 0 0 1 0
+            0 0 0 0 0 0 1 1 1 0
+            0 1 1 1 1 1 1 0 0 0
+            0 1 0 0 0 0 0 0 0 0
+            0 1 1 1 1 1 1 1 0 0
+            0 0 0 0 0 0 0 1 0 0
+            0 0 1 1 1 1 1 1 0 0
+            0 0 1 0 0 0 0 0 0 0
+            0 0 1 1 1 1 1 1 1 2
             0 0 0 0 0 0 0 0 0 0
         `,
+        waypoints: [
+    {x: 1.5, y: 0.5},  // Entrada (Topo)
+    {x: 1.5, y: 2.5},  // Primeira curva (Direita)
+    {x: 4.5, y: 2.5},  // Segunda curva (Baixo)
+    {x: 4.5, y: 4.5},  // Terceira curva (Direita)
+    {x: 6.5, y: 4.5},  // Quarta curva (Cima) -> Você tinha pulado esta!
+    {x: 6.5, y: 1.5},  // Quinta curva (Direita)
+    {x: 8.5, y: 1.5},  // Sexta curva (Baixo)
+    {x: 8.5, y: 6.5},  // Sétima curva (Esquerda)
+    {x: 6.5, y: 6.5},  // Oitava curva (Baixo)
+    {x: 6.5, y: 7.5},  // Nona curva (Esquerda)
+    {x: 1.5, y: 7.5},  // Décima curva (Baixo)
+    {x: 1.5, y: 9.5},  // 11ª curva (Direita)
+    {x: 7.5, y: 9.5},  // 12ª curva (Baixo)
+    {x: 7.5, y: 11.5}, // 13ª curva (Esquerda) -> Refletindo o grid
+    {x: 2.5, y: 11.5}, // 14ª curva (Baixo)
+    {x: 2.5, y: 13.5}, // 15ª curva (Direita final)
+    {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
+],
         // Configuração de Inimigos por Onda
         waveLogic: [
             { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
             { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
             { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
         ]
-        // ... waypoints e waveLogic do Deserto
-    }
+    },
+    {
+        id: 5,
+        name: "Planície Verde",
+        description: "Uma rota simples para iniciantes.",
+        startingMoney: 100,
+        totalWaves: 10,
+        // O sistema vai converter esse desenho em matriz automaticamente
+        mapLayout: `
+            0 1 0 0 0 0 0 0 0 0
+            0 1 0 0 0 0 1 1 1 0
+            0 1 1 1 1 0 1 0 1 0
+            0 0 0 0 1 0 1 0 1 0
+            0 0 0 0 1 1 1 0 1 0
+            0 0 0 0 0 0 0 0 1 0
+            0 0 0 0 0 0 1 1 1 0
+            0 1 1 1 1 1 1 0 0 0
+            0 1 0 0 0 0 0 0 0 0
+            0 1 1 1 1 1 1 1 0 0
+            0 0 0 0 0 0 0 1 0 0
+            0 0 1 1 1 1 1 1 0 0
+            0 0 1 0 0 0 0 0 0 0
+            0 0 1 1 1 1 1 1 1 2
+            0 0 0 0 0 0 0 0 0 0
+        `,
+        waypoints: [
+    {x: 1.5, y: 0.5},  // Entrada (Topo)
+    {x: 1.5, y: 2.5},  // Primeira curva (Direita)
+    {x: 4.5, y: 2.5},  // Segunda curva (Baixo)
+    {x: 4.5, y: 4.5},  // Terceira curva (Direita)
+    {x: 6.5, y: 4.5},  // Quarta curva (Cima) -> Você tinha pulado esta!
+    {x: 6.5, y: 1.5},  // Quinta curva (Direita)
+    {x: 8.5, y: 1.5},  // Sexta curva (Baixo)
+    {x: 8.5, y: 6.5},  // Sétima curva (Esquerda)
+    {x: 6.5, y: 6.5},  // Oitava curva (Baixo)
+    {x: 6.5, y: 7.5},  // Nona curva (Esquerda)
+    {x: 1.5, y: 7.5},  // Décima curva (Baixo)
+    {x: 1.5, y: 9.5},  // 11ª curva (Direita)
+    {x: 7.5, y: 9.5},  // 12ª curva (Baixo)
+    {x: 7.5, y: 11.5}, // 13ª curva (Esquerda) -> Refletindo o grid
+    {x: 2.5, y: 11.5}, // 14ª curva (Baixo)
+    {x: 2.5, y: 13.5}, // 15ª curva (Direita final)
+    {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
+],
+        // Configuração de Inimigos por Onda
+        waveLogic: [
+            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
+            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
+            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
+        ]
+    },
+    {
+        id: 6,
+        name: "Planície Verde",
+        description: "Uma rota simples para iniciantes.",
+        startingMoney: 100,
+        totalWaves: 10,
+        // O sistema vai converter esse desenho em matriz automaticamente
+        mapLayout: `
+            0 1 0 0 0 0 0 0 0 0
+            0 1 0 0 0 0 1 1 1 0
+            0 1 1 1 1 0 1 0 1 0
+            0 0 0 0 1 0 1 0 1 0
+            0 0 0 0 1 1 1 0 1 0
+            0 0 0 0 0 0 0 0 1 0
+            0 0 0 0 0 0 1 1 1 0
+            0 1 1 1 1 1 1 0 0 0
+            0 1 0 0 0 0 0 0 0 0
+            0 1 1 1 1 1 1 1 0 0
+            0 0 0 0 0 0 0 1 0 0
+            0 0 1 1 1 1 1 1 0 0
+            0 0 1 0 0 0 0 0 0 0
+            0 0 1 1 1 1 1 1 1 2
+            0 0 0 0 0 0 0 0 0 0
+        `,
+        waypoints: [
+    {x: 1.5, y: 0.5},  // Entrada (Topo)
+    {x: 1.5, y: 2.5},  // Primeira curva (Direita)
+    {x: 4.5, y: 2.5},  // Segunda curva (Baixo)
+    {x: 4.5, y: 4.5},  // Terceira curva (Direita)
+    {x: 6.5, y: 4.5},  // Quarta curva (Cima) -> Você tinha pulado esta!
+    {x: 6.5, y: 1.5},  // Quinta curva (Direita)
+    {x: 8.5, y: 1.5},  // Sexta curva (Baixo)
+    {x: 8.5, y: 6.5},  // Sétima curva (Esquerda)
+    {x: 6.5, y: 6.5},  // Oitava curva (Baixo)
+    {x: 6.5, y: 7.5},  // Nona curva (Esquerda)
+    {x: 1.5, y: 7.5},  // Décima curva (Baixo)
+    {x: 1.5, y: 9.5},  // 11ª curva (Direita)
+    {x: 7.5, y: 9.5},  // 12ª curva (Baixo)
+    {x: 7.5, y: 11.5}, // 13ª curva (Esquerda) -> Refletindo o grid
+    {x: 2.5, y: 11.5}, // 14ª curva (Baixo)
+    {x: 2.5, y: 13.5}, // 15ª curva (Direita final)
+    {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
+],
+        // Configuração de Inimigos por Onda
+        waveLogic: [
+            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
+            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
+            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
+        ]
+    },
 ];
 
 // Função utilitária para converter o texto em matriz real

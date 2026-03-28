@@ -1,34 +1,34 @@
 /**
- * MAIN.JS - Versão Final Otimizada
+ * MAIN.JS - Versão Final com Sistema de Estrelas e Progressão
  */
 
 import { GAME_CONFIG } from './constants.js';
-import { LEVELS } from './core/Levels.js';
-import { LevelProvider } from './core/LevelProvider.js';
 import { Map } from './core/Map.js';
 import { Input } from './core/Input.js';
 import { WaveManager } from './core/WaveManager.js';
 import { UIManager } from './core/UIManager.js';
-import { ScoreSystem } from './core/ScoreSystem.js';
+import { LevelManager } from './core/LevelManager.js'; // Novo
 import { Tower } from './entities/Tower.js';
 import { Enemy } from './entities/Enemy.js';
 import { Particle } from './entities/Particle.js';
-import { TOWER_TYPES } from './core/TowerTypes.js';
-import { ENEMY_TYPES } from './core/EnemyTypes.js';
 
 // 1. Contexto e Motores
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const gameMap = new Map([]); 
 const waveManager = new WaveManager();
+const levelManager = new LevelManager(); // Instância do novo manager
 const input = new Input(canvas, 0);
 
-// 2. Estado Global
+// 2. Estado Global do Jogador (Upgradable)
+let globalMaxLives = 10; 
 let gameStarted = false;
 let isGameOver = false;
 let isPaused = false;
+let currentLevelId = null;
 let currentLevelData = null;
 
+// Estado da Partida
 let money = 0;
 let lives = 0;
 let score = 0;
@@ -36,7 +36,8 @@ let TILE_SIZE = 0;
 let shakeTime = 0;
 let shakeIntensity = 0;
 let draggedTower = null; 
-let originalPos = { col: 0, row: 0 }; // Para devolver a torre se o lugar for inválido
+let originalPos = { col: 0, row: 0 };
+let selectedTowerType = null; 
 
 // Listas de Entidades
 const towers = [];
@@ -44,21 +45,15 @@ const enemies = [];
 const projectiles = [];
 const particles = [];
 
-// Começa como NULL para o jogador ter que clicar no menu antes de construir
-let selectedTowerType = null; 
-
 /**
  * INICIALIZAÇÃO
  */
 function init() {
-    // Configura o clique do botão "JOGAR AGORA" da Tela Inicial
+    // Ao clicar em JOGAR, abre o Level Select (o Mapa)
     document.getElementById('btn-start-game').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('level-selection-screen').style.display = 'flex';
-        
-        UIManager.renderLevelMenu((levelConfig) => {
-            startLevel(levelConfig);
-        });
+        document.getElementById('level-select-screen').style.display = 'flex';
+        renderLevelMap();
     };
 
     setupGlobalEvents();
@@ -66,46 +61,110 @@ function init() {
 }
 
 /**
+ * RENDERIZAÇÃO DO MAPA DE FASES (Caminho em S)
+ */
+function renderLevelMap() {
+    const map = document.getElementById('levels-map');
+    if (!map) return;
+    map.innerHTML = ''; 
+
+    // Coordenadas para espalhar as fases na vertical do celular
+    const coords = [
+        { x: 25, y: 85 }, // Fase 1
+        { x: 70, y: 75 }, // Fase 2
+        { x: 30, y: 60 }, // Fase 3
+        { x: 75, y: 45 }, // Fase 4
+        { x: 40, y: 30 }, // Fase 5
+        { x: 80, y: 15 }  // Fase 6
+    ];
+
+    Object.values(levelManager.levels).forEach((lvl, index) => {
+        const pos = coords[index] || { x: 50, y: 50 };
+        const node = document.createElement('div');
+        
+        // Define se a fase está aberta ou trancada
+        node.className = `level-node ${lvl.unlocked ? 'unlocked' : 'locked'}`;
+        
+        // Aplica o posicionamento via CSS Inline
+        node.style.left = pos.x + '%';
+        node.style.top = pos.y + '%';
+
+        if (lvl.unlocked) {
+            // Cria o container de estrelas
+            let starsHTML = '<div class="node-stars">';
+            const starsConquered = lvl.stars || 0;
+
+            // Gera sempre 3 estrelas, mudando a classe conforme a conquista
+            for (let i = 1; i <= 3; i++) {
+                const statusClass = i <= starsConquered ? 'active' : 'inactive';
+                starsHTML += `<span class="star ${statusClass}"></span>`;
+            }
+            starsHTML += '</div>';
+
+            // Insere as estrelas e o número da fase
+            node.innerHTML = `${starsHTML} <span class="level-number">${lvl.id}</span>`;
+            node.onclick = () => startLevel(lvl.id);
+        } else {
+            // Ícone para fase trancada
+            node.innerHTML = '<span class="lock-icon"></span>';
+        }
+
+        map.appendChild(node);
+    });
+
+    // Atualiza o contador global no topo da tela
+    const totalStarsElem = document.getElementById('total-stars-count');
+    if (totalStarsElem) {
+        totalStarsElem.innerText = levelManager.getTotalStars();
+    }
+
+    // 1. Pega os valores do LevelManager
+    const currentStars = levelManager.getTotalStars();
+    const maxStars = levelManager.getMaxPossibleStars();
+
+    // 2. Seleciona o elemento do placar
+    const starsDisplay = document.querySelector('.stars-display');
+    
+    // 3. Atualiza o conteúdo mantendo o ID para o número atual
+    // e preenchendo o total de forma dinâmica
+    if (starsDisplay) {
+        starsDisplay.innerHTML = `
+            <span id="total-stars-count">${currentStars}</span>/ ${maxStars}
+        `;
+    }
+}
+
+/**
  * CARREGAMENTO DE NÍVEL
  */
-function startLevel(levelConfig) {
-    // 1. Processa o mapa e gera waypoints automáticos
-    currentLevelData = LevelProvider.parse(levelConfig);
+function startLevel(levelId) {
+    currentLevelId = levelId;
+    currentLevelData = levelManager.levels[levelId];
 
-    // 2. Configura os Motores
+    // Configura o Mapa e WaveManager
     gameMap.setData(currentLevelData.grid);
     waveManager.configure(currentLevelData);
     
-    // 3. Reseta Status do Jogo
-    money = levelConfig.startingMoney || GAME_CONFIG.STARTING_MONEY;
-    lives = GAME_CONFIG.STARTING_LIVES;
+    // Reseta Status usando Vida Global
+    money = currentLevelData.startingMoney || 150;
+    lives = globalMaxLives; // <-- Usa o upgrade do jogador
     score = 0;
     isGameOver = false;
     isPaused = false;
-    selectedTowerType = null; // Garante que começa sem seleção
+    selectedTowerType = null;
     
-    // Limpa entidades
     towers.length = 0;
     enemies.length = 0;
     projectiles.length = 0;
     particles.length = 0;
 
-    // 4. Prepara Interface (Passa NULL para nenhum botão brilhar no início)
     resizeCanvas();
-    UIManager.createTowerButtons(null, onTowerSelected);
+    UIManager.createTowerButtons(null, (type) => selectedTowerType = type);
 
-    // 5. Exibe o Jogo
-    document.getElementById('level-selection-screen').style.display = 'none';
+    document.getElementById('level-select-screen').style.display = 'none';
     document.getElementById('ui-layer').style.display = 'block';
     gameStarted = true;
     updateHUD();
-}
-
-/**
- * CALLBACK DE SELEÇÃO DE TORRE
- */
-function onTowerSelected(type) {
-    selectedTowerType = type;
 }
 
 /**
@@ -128,7 +187,6 @@ function gameLoop(currentTime) {
 function updateAndRender(currentTime) {
     ctx.save();
     
-    // Efeito de Tela (Shake)
     if (shakeTime > 0) {
         ctx.translate((Math.random() - 0.5) * shakeIntensity, (Math.random() - 0.5) * shakeIntensity);
         shakeTime--;
@@ -137,19 +195,18 @@ function updateAndRender(currentTime) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     gameMap.draw(ctx, TILE_SIZE);
 
-    // 1. Spawn de Inimigos
+    // 1. Spawn
     const enemyData = waveManager.update(currentTime);
     if (enemyData) {
         enemies.push(new Enemy(currentLevelData.waypoints, enemyData));
     }
 
-    // 2. Processar Inimigos
+    // 2. Inimigos
     for (let i = enemies.length - 1; i >= 0; i--) {
         const enemy = enemies[i];
         enemy.update(TILE_SIZE);
         enemy.draw(ctx, TILE_SIZE);
 
-        // Inimigo chegou ao fim do caminho
         if (enemy.waypointIndex >= currentLevelData.waypoints.length) {
             lives--;
             shakeTime = 15; shakeIntensity = 8;
@@ -159,7 +216,6 @@ function updateAndRender(currentTime) {
             continue;
         }
 
-        // Inimigo morreu
         if (enemy.isDead) {
             money += enemy.reward;
             score += 10;
@@ -169,120 +225,154 @@ function updateAndRender(currentTime) {
         }
     }
 
-    // --- VERIFICAÇÃO DE FINAL DE ONDA ---
-    // Se o spawn acabou E não há mais inimigos na tela, a onda terminou de fato
-    if (waveManager.isWaveActive && waveManager.spawningComplete && enemies.length === 0) {
-        waveManager.isWaveActive = false;
-        console.log("Onda finalizada! Movimentação de torres liberada.");
-        updateHUD(); // Atualiza interface se necessário
+    // --- FINAL DE ONDA / VITÓRIA ---
+    if (waveManager.spawningComplete && enemies.length === 0) {
+        if (waveManager.currentWave >= waveManager.totalWaves) {
+            handleVictory();
+        } else {
+            waveManager.isWaveActive = false;
+            document.getElementById('fab-wave-control').classList.remove('wave-active');
+        }
     }
 
-    // 3. Torres e Combate
+    // 3. Entidades
     towers.forEach(t => {
         t.update(currentTime, enemies, TILE_SIZE, projectiles);
         t.draw(ctx, TILE_SIZE, gameMap);
     });
 
-    // 4. Projéteis e Partículas
     handleProjectiles();
     handleParticles();
-
-    // 5. LÓGICA DE MOVIMENTAÇÃO E CONSTRUÇÃO
-    // A handleDragLogic internamente já deve checar !waveManager.isWaveActive
     handleDragLogic();  
     handleBuildLogic();
-
-    // Sincroniza estado do botão FAB
-    const fab = document.getElementById('fab-wave-control');
-    if (!waveManager.isWaveActive) {
-        fab.classList.remove('wave-active');
-    }
 
     ctx.restore();
 }
 
-/**
- * LÓGICA DE CONSTRUÇÃO COM AUTO-RESET
- */
-function handleBuildLogic() {
-    if (input.selectedTile && selectedTowerType) {
-        const { col, row } = input.selectedTile;
-        
-        // Verifica se o terreno é grama (0)
-        if (gameMap.getTileAt(col, row) === 0) {
-            const ocupado = towers.find(t => t.col === col && t.row === row);
-            const canAfford = money >= selectedTowerType.price;
-            
-            if (!ocupado && canAfford) {
-                // Constrói
-                towers.push(new Tower(col, row, selectedTowerType));
-                money -= selectedTowerType.price;
-                
-                // --- RESET DE SELEÇÃO ---
-                selectedTowerType = null; 
-                UIManager.createTowerButtons(null, onTowerSelected);
-                // ------------------------
 
-                updateHUD();
-                input.clearSelection();
-            } else if (ocupado || !canAfford) {
-                // Preview de erro
-                ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-                ctx.fillRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-            }
-        } else {
-            // Se clicar no caminho (1) ou base (2), limpa seleção
-            input.clearSelection();
-        }
+// 1. Verifique se essa função existe no seu arquivo
+export function showScreen(screenId) {
+    // Esconde todas as divs que têm a classe "screen"
+    document.querySelectorAll('.screen').forEach(s => {
+        s.style.display = 'none';
+    });
+
+    // Mostra a tela desejada
+    const target = document.getElementById(screenId);
+    if (target) {
+        target.style.display = 'flex';
+        console.log("Tela atual:", screenId);
     }
 }
 
 
+/**
+ * LÓGICA DE VITÓRIA E ESTRELAS
+ */
+function handleVictory() {
+    gameStarted = false; // Para o processamento do jogo
+    
+    // 1. Calcula as estrelas com base na vida atual vs máxima
+    const starsEarned = levelManager.calculateStars(lives, globalMaxLives);
+    
+    // 2. Salva o progresso no LevelManager (desbloqueia próxima fase)
+    levelManager.processWin(currentLevelId, starsEarned);
+    
+    // 3. Prepara o Modal de Vitória
+    const starsContainer = document.getElementById('modal-stars');
+    const modalMsg = document.getElementById('modal-msg');
+    
+    if (starsContainer) {
+        starsContainer.innerHTML = ''; // Limpa estrelas anteriores
+        
+        for (let i = 1; i <= 3; i++) {
+            const star = document.createElement('div');
+            // Usa as classes CSS que configuramos com SVGs
+            star.className = `star ${i <= starsEarned ? 'active' : 'inactive'}`;
+            // Adiciona um pequeno atraso para a animação de "pop" em cascata
+            star.style.animationDelay = `${i * 0.15}s`; 
+            starsContainer.appendChild(star);
+        }
+    }
+
+    if (modalMsg) {
+        modalMsg.innerText = `Você conquistou ${starsEarned} de 3 estrelas!`;
+    }
+    
+    // 4. Exibe o Modal e esconde a UI de jogo
+    document.getElementById('ui-layer').style.display = 'none';
+    document.getElementById('victory-modal').style.display = 'flex';
+}
+
+// Função para o botão "Continuar" do Modal
+// Função para fechar o modal e IR para a seleção de fases
+export function closeVictoryModal() {
+    // 1. Esconde o modal
+    document.getElementById('victory-modal').style.display = 'none';
+    
+    // 2. Muda para a tela de seleção de fases
+    showScreen('level-select-screen');
+    
+    // 3. Atualiza o mapa (estrelas e cadeados)
+    renderLevelMap();
+}
+
+// IMPORTANTE: Torne-as globais para o HTML (onclick) funcionar!
+window.showScreen = showScreen;
+window.closeVictoryModal = closeVictoryModal;
+
+/**
+ * ARRASTE E CONSTRUÇÃO (Resumido para o main)
+ */
+function handleBuildLogic() {
+    if (input.selectedTile && selectedTowerType) {
+        const { col, row } = input.selectedTile;
+        if (gameMap.getTileAt(col, row) === 0) {
+            const ocupado = towers.find(t => t.col === col && t.row === row);
+            if (!ocupado && money >= selectedTowerType.price) {
+                towers.push(new Tower(col, row, selectedTowerType));
+                money -= selectedTowerType.price;
+                selectedTowerType = null; 
+                UIManager.createTowerButtons(null, (t) => selectedTowerType = t);
+                updateHUD();
+                input.clearSelection();
+            }
+        }
+    }
+}
 
 function handleDragLogic() {
-    // 1. INICIAR ARRASTE
-    // Adicionamos a condição: !waveManager.isWaveActive
     if (input.isDown && !draggedTower && !selectedTowerType && !waveManager.isWaveActive) {
         const { col, row } = input.getTileCoords();
         const towerFound = towers.find(t => t.col === col && t.row === row);
-        
         if (towerFound) {
             draggedTower = towerFound;
             originalPos = { col: towerFound.col, row: towerFound.row };
             draggedTower.isDragging = true;
         }
     }
-
-    // 2. DURANTE O ARRASTE (Permanece igual)
     if (draggedTower && input.isDown) {
         const { col, row } = input.getTileCoords();
         draggedTower.col = col;
         draggedTower.row = row;
     }
-
-    // 3. SOLTAR A TORRE (Permanece igual)
     if (!input.isDown && draggedTower) {
         const { col, row } = draggedTower;
-        const isTerrainValid = gameMap.getTileAt(col, row) === 0;
-        const isOccupied = towers.find(t => t !== draggedTower && t.col === col && t.row === row);
-
-        if (!isTerrainValid || isOccupied) {
+        const valid = gameMap.getTileAt(col, row) === 0 && !towers.find(t => t !== draggedTower && t.col === col && t.row === row);
+        if (!valid) {
             draggedTower.col = originalPos.col;
             draggedTower.row = originalPos.row;
         }
-
         draggedTower.isDragging = false;
         draggedTower = null;
     }
 }
 
-
 /**
- * EVENTOS GLOBAIS
+ * AUXILIARES
  */
 function setupGlobalEvents() {
     window.addEventListener('resize', resizeCanvas);
-    
     document.getElementById('fab-wave-control').onclick = () => {
         if (!waveManager.isWaveActive && enemies.length === 0) {
             if (waveManager.startNextWave()) {
@@ -293,14 +383,25 @@ function setupGlobalEvents() {
             isPaused = !isPaused;
         }
     };
+}
 
-    document.getElementById('btn-save-score').onclick = () => {
-        const name = document.getElementById('player-name').value;
-        const newId = ScoreSystem.save(name, score);
-        UIManager.displayHighScores(newId);
-    };
+function updateHUD() {
+    UIManager.updateHUD(money, lives, waveManager.currentWave, waveManager.totalWaves);
+}
 
-    document.getElementById('btn-restart').onclick = () => location.reload();
+function resizeCanvas() {
+    if (!currentLevelData) return;
+    const rows = currentLevelData.grid.length;
+    const cols = currentLevelData.grid[0].length;
+    TILE_SIZE = Math.min(window.innerWidth / cols, window.innerHeight / rows);
+    canvas.width = cols * TILE_SIZE;
+    canvas.height = rows * TILE_SIZE;
+    input.updateTileSize(TILE_SIZE);
+}
+
+function endGame() {
+    isGameOver = true;
+    document.getElementById('game-over-screen').style.display = 'flex';
 }
 
 function handleProjectiles() {
@@ -319,31 +420,8 @@ function handleParticles() {
     }
 }
 
-function updateHUD() {
-    UIManager.updateHUD(money, lives, waveManager.currentWave, waveManager.totalWaves);
-}
-
 function createExplosion(x, y, color) {
-    for (let i = 0; i < 12; i++) {
-        particles.push(new Particle(x, y, color));
-    }
-}
-
-function resizeCanvas() {
-    if (!currentLevelData) return;
-    const rows = currentLevelData.grid.length;
-    const cols = currentLevelData.grid[0].length;
-    
-    TILE_SIZE = window.innerHeight / rows;
-    canvas.width = cols * TILE_SIZE;
-    canvas.height = rows * TILE_SIZE;
-
-    if (canvas.width > window.innerWidth) {
-        TILE_SIZE = window.innerWidth / cols;
-        canvas.width = window.innerWidth;
-        canvas.height = rows * TILE_SIZE;
-    }
-    input.updateTileSize(TILE_SIZE);
+    for (let i = 0; i < 12; i++) particles.push(new Particle(x, y, color));
 }
 
 function drawPauseOverlay() {
@@ -353,13 +431,6 @@ function drawPauseOverlay() {
     ctx.font = "bold 30px Arial";
     ctx.textAlign = "center";
     ctx.fillText("PAUSADO", canvas.width / 2, canvas.height / 2);
-}
-
-function endGame() {
-    isGameOver = true;
-    document.getElementById('final-score').innerText = score;
-    document.getElementById('game-over-screen').style.display = 'flex';
-    UIManager.displayHighScores();
 }
 
 init();
