@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css">
     <title>MEGA TD</title>
 </head>
+
 <body>
     <div id="game-container">
         <div id="start-screen" class="overlay">
@@ -13,12 +15,44 @@
                 <h1 class="logo-title">MEGA TD</h1>
                 <p>Defenda sua base contra as hordas!</p>
                 <button id="btn-start-game" class="btn-main-action">JOGAR AGORA</button>
+                <button id="btn-open-settings" class="btn-secondary">⚙️ CONFIGURAÇÕES</button>
                 <div class="instructions">
                     <span>🖱️ Clique no gramado para construir</span>
                     <span>💀 Inicie a onda quando estiver pronto</span>
                 </div>
             </div>
         </div>
+
+        <div id="settings-screen" class="overlay" style="display: none;">
+            <div class="modal-content">
+                <h2>CONFIGURAÇÕES</h2>
+                <hr>
+
+                <div class="setting-row">
+                    <span>Efeitos Sonoros (SFX)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="check-sfx">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <span>Música</span>
+                    <label class="switch">
+                        <input type="checkbox" id="check-music">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="danger-zone">
+                    <button id="btn-reset-storage" class="btn-danger">APAGAR TODO PROGRESSO</button>
+                    <p class="warning-text">Isso resetará recordes e configurações.</p>
+                </div>
+
+                <button id="btn-close-settings" class="btn-main-action">VOLTAR</button>
+            </div>
+        </div>
+
 
         <div id="level-select-screen" class="screen" style="display: none;">
             <div class="level-header">
@@ -29,32 +63,32 @@
 
             <div id="levels-map" class="map-container"></div>
 
-        <div class="footer-controls">
-            <button class="btn-footer btn-upgrade" onclick="showScreen('upgrade-screen')">
-                UPGRADE
-            </button>
-            <button class="btn-footer btn-help" onclick="showScreen('help-screen')">
-                HELP
-            </button>
-        </div>
-    </div>
-
-
-<div id="victory-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <h2 id="modal-title">VITÓRIA!</h2>
-        <div id="modal-stars" class="modal-stars-container">
+            <div class="footer-controls">
+                <button class="btn-footer btn-upgrade" onclick="showScreen('upgrade-screen')">
+                    UPGRADE
+                </button>
+                <button class="btn-footer btn-help" onclick="showScreen('help-screen')">
+                    HELP
+                </button>
             </div>
-        <p id="modal-msg">Fase Concluída!</p>
-        <button class="btn-footer" onclick="closeVictoryModal()">CONTINUAR</button>
-    </div>
-</div>
+        </div>
+
+
+        <div id="victory-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <h2 id="modal-title">VITÓRIA!</h2>
+                <div id="modal-stars" class="modal-stars-container">
+                </div>
+                <p id="modal-msg">Fase Concluída!</p>
+                <button class="btn-footer" onclick="closeVictoryModal()">CONTINUAR</button>
+            </div>
+        </div>
 
         <div id="game-over-screen" class="overlay" style="display: none;">
             <div class="modal-content">
                 <h1>FIM DE JOGO</h1>
                 <p>Sua Pontuação: <span id="final-score">0</span></p>
-                
+
                 <div id="name-input-section">
                     <input type="text" id="player-name" placeholder="Seu Nome" maxlength="10">
                     <button id="btn-save-score">SALVAR RECORDE</button>
@@ -89,8 +123,12 @@
 
             <button id="fab-wave-control" class="fab">
                 <div class="icon-container">
-                    <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    <svg class="icon-play" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
                 </div>
             </button>
 
@@ -100,4 +138,5 @@
 
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

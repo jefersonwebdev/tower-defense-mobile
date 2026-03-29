@@ -1,6 +1,7 @@
 /**
  * MAIN.JS - Versão Final com Sistema de Estrelas e Progressão
  */
+import { SettingsManager } from './SettingsManager.js';
 import { SFX, playSound } from './core/AudioManager.js';
 import { GAME_CONFIG } from './constants.js';
 import { Map } from './core/Map.js';
@@ -49,6 +50,8 @@ const particles = [];
  * INICIALIZAÇÃO
  */
 function init() {
+    SettingsManager.init();
+    
     // Ao clicar em JOGAR, abre o Level Select (o Mapa)
     document.getElementById('btn-start-game').onclick = () => {
         document.getElementById('start-screen').style.display = 'none';
@@ -437,16 +440,46 @@ function handleDragLogic() {
  */
 function setupGlobalEvents() {
     window.addEventListener('resize', resizeCanvas);
-    document.getElementById('fab-wave-control').onclick = () => {
-        if (!waveManager.isWaveActive && enemies.length === 0) {
-            if (waveManager.startNextWave()) {
-                document.getElementById('fab-wave-control').classList.add('wave-active');
-                updateHUD();
-            }
-        } else {
-            isPaused = !isPaused;
+
+    // --- SONS DE INTERFACE (Global) ---
+    document.addEventListener('click', (e) => {
+        // Verifica se o que foi clicado é um botão ou está dentro de um botão
+        if (e.target.closest('button')) {
+            playSound(SFX.click);
         }
-    };
+    });
+
+    // --- CONTROLE DA ONDA E PAUSE ---
+    const waveBtn = document.getElementById('fab-wave-control');
+    if (waveBtn) {
+        waveBtn.onclick = () => {
+            if (!waveManager.isWaveActive && enemies.length === 0) {
+                if (waveManager.startNextWave()) {
+                    waveBtn.classList.add('wave-active');
+                    updateHUD();
+                }
+            } else {
+                isPaused = !isPaused;
+            }
+        };
+    }
+
+    // --- LÓGICA DE CONFIGURAÇÕES ---
+    const settingsScreen = document.getElementById('settings-screen');
+    const btnOpen = document.getElementById('btn-open-settings');
+    const btnClose = document.getElementById('btn-close-settings');
+
+    if (btnOpen && settingsScreen) {
+        btnOpen.onclick = () => {
+            settingsScreen.style.display = 'flex';
+        };
+    }
+
+    if (btnClose && settingsScreen) {
+        btnClose.onclick = () => {
+            settingsScreen.style.display = 'none';
+        };
+    }
 }
 
 /**
