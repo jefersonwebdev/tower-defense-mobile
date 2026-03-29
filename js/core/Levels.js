@@ -7,7 +7,7 @@ export const LEVELS = [
         id: 1,
         name: "Planície Verde",
         description: "Uma rota simples para iniciantes.",
-        startingMoney: 100,
+        startingMoney: 50,
         totalWaves: 10,
         // O sistema vai converter esse desenho em matriz automaticamente
         mapLayout: `
@@ -51,7 +51,7 @@ export const LEVELS = [
         { 
             startWave: 1, 
             spawnRate: 2000, 
-            enemies: { 'BASIC': 5 } // Onda 1 até 3: apenas 8 básicos
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
         },
         { 
             startWave: 3, 
@@ -59,9 +59,14 @@ export const LEVELS = [
             enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
         },
         { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
             startWave: 8, 
             spawnRate: 1200, 
-            enemies: { 'BASIC': 8,'FAST': 2, 'TANK': 1 } // Onda 8 em diante: elite
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
         }
     ]
     },
@@ -105,9 +110,26 @@ export const LEVELS = [
         {x: 6.5, y: 0.5}   // FIM (Sobe para o '2' na Coluna 6)
     ],
     waveLogic: [
-        { startWave: 1, types: ['FAST'], spawnRate: 1000 },
-        { startWave: 5, types: ['FAST', 'BASIC'], spawnRate: 800 },
-        { startWave: 10, types: ['TANK'], spawnRate: 1200 }
+        { 
+            startWave: 1, 
+            spawnRate: 2000, 
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
+        },
+        { 
+            startWave: 3, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 8, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        }
     ]
 },
 {
@@ -155,10 +177,27 @@ export const LEVELS = [
 ],
         // Configuração de Inimigos por Onda
         waveLogic: [
-            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
-            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
-            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
-        ]
+        { 
+            startWave: 1, 
+            spawnRate: 2000, 
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
+        },
+        { 
+            startWave: 3, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 8, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        }
+    ]
     },
     {
         id: 4,
@@ -205,10 +244,27 @@ export const LEVELS = [
 ],
         // Configuração de Inimigos por Onda
         waveLogic: [
-            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
-            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
-            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
-        ]
+        { 
+            startWave: 1, 
+            spawnRate: 2000, 
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
+        },
+        { 
+            startWave: 3, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 8, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        }
+    ]
     },
     {
         id: 5,
@@ -255,10 +311,27 @@ export const LEVELS = [
 ],
         // Configuração de Inimigos por Onda
         waveLogic: [
-            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
-            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
-            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
-        ]
+        { 
+            startWave: 1, 
+            spawnRate: 2000, 
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
+        },
+        { 
+            startWave: 3, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 8, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        }
+    ]
     },
     {
         id: 6,
@@ -304,11 +377,28 @@ export const LEVELS = [
     {x: 9.5, y: 13.5}  // Destino Final (Onde está o 2)
 ],
         // Configuração de Inimigos por Onda
-        waveLogic: [
-            { startWave: 1, types: ['BASIC'], spawnRate: 1500 },
-            { startWave: 4, types: ['BASIC', 'FAST'], spawnRate: 1200 },
-            { startWave: 8, types: ['FAST', 'TANK'], spawnRate: 1000 }
-        ]
+       waveLogic: [
+        { 
+            startWave: 1, 
+            spawnRate: 2500, 
+            enemies: { 'BASIC': 5} // Onda 1 até 3: apenas 8 básicos
+        },
+        { 
+            startWave: 3, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 6, 'FAST': 1 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 5, 
+            spawnRate: 1500, 
+            enemies: { 'BASIC': 8, 'FAST': 2 } // Onda 4 até 7: mistura
+        },
+        { 
+            startWave: 8, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        }
+    ]
     },
 ];
 
