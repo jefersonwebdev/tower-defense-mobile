@@ -67,6 +67,11 @@ export const LEVELS = [
             startWave: 8, 
             spawnRate: 1200, 
             enemies: { 'BASIC': 10,'FAST': 3, 'TANK': 1 } // Onda 8 em diante: elite
+        },
+        { 
+            startWave: 10, 
+            spawnRate: 1200, 
+            enemies: { 'BASIC': 12,'FAST': 4, 'TANK': 2 } // Onda 8 em diante: elite
         }
     ]
     },
