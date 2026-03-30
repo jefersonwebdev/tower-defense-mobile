@@ -3,7 +3,9 @@
  */
 import { Tower } from '../entities/Tower.js'; // Caminho atualizado
 import { LEVELS } from './Levels.js';
-import { TOWER_TYPES } from './TowerTypes.js';
+
+import { getTowerStats } from './TowerTypes.js'; // Importamos a FUNÇÃO agora
+import { UpgradeStore } from './UpgradeStore.js'; // Para mostrar as estrelas se quiser
 
 export const UIManager = {
     /**
@@ -35,7 +37,7 @@ export const UIManager = {
     /**
      * Cria os botões de inventário de torres
      /**
- * @param {number} playerMoney - Dinheiro atual do jogador
+ *@param {number} playerMoney - Dinheiro atual do jogador
  * @param {Object|null} selectedType - Torre selecionada
  * @param {Function} onSelect - Callback
  */
@@ -45,35 +47,43 @@ createTowerButtons(playerMoney, selectedType, onSelect) {
 
     container.innerHTML = ''; 
 
-    Object.keys(TOWER_TYPES).forEach(key => {
-        const type = TOWER_TYPES[key];
+    // Definimos as chaves das torres que queremos exibir no menu
+    const availableTowers = ['BASIC', 'FAST', 'SNIPER', 'ICE'];
+
+    availableTowers.forEach(key => {
+        // IMPORTANTE: Aqui pegamos os stats ATUALIZADOS com os upgrades
+        const stats = getTowerStats(key); 
+        
         const btn = document.createElement('button');
         
-        const isSelected = selectedType && selectedType.name === type.name;
-        const canAfford = playerMoney >= type.price; // VERIFICAÇÃO DE DINHEIRO
+        // Verificamos a seleção pelo 'type' que é único
+        const isSelected = selectedType && selectedType.type === stats.type;
+        const canAfford = playerMoney >= stats.price; 
         
-        const iconUrl = Tower.generateStaticIcon(type, 64); 
+        // Gera o ícone usando os stats calculados (cor, etc)
+        const iconUrl = Tower.generateStaticIcon(stats, 64); 
         
-        // Adicionamos a classe 'disabled' se não tiver dinheiro
         btn.className = `tower-btn ${isSelected ? 'selected' : ''} ${!canAfford ? 'disabled' : ''}`;
-        btn.style.setProperty('--tower-color', type.color); 
+        btn.style.setProperty('--tower-color', stats.color); 
         
         btn.innerHTML = `
             <div class="tower-icon-frame">
                 <img src="${iconUrl}" class="tower-render-img">
             </div>
             <div class="tower-details">
-                <strong>${type.name.toUpperCase()}</strong>
-                <span class="price-tag">$${type.price}</span>
+                <strong>${stats.name.toUpperCase()}</strong>
+                <span class="price-tag">$${stats.price}</span>
             </div>
         `;
 
-        // Só permite clicar se tiver dinheiro (ou se for para deselecionar)
         btn.onclick = () => {
             if (!canAfford && !isSelected) return; 
             
-            const newSelection = isSelected ? null : type;
+            // Se já estiver selecionado, deseleciona (null). Se não, seleciona os stats.
+            const newSelection = isSelected ? null : stats;
             onSelect(newSelection);
+            
+            // Re-renderiza para atualizar as bordas de seleção
             this.createTowerButtons(playerMoney, newSelection, onSelect);
         };
 

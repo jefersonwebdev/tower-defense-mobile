@@ -3,6 +3,7 @@
  * Gerencia o estado das fases, progresso e conversão de dados.
  */
 import { LEVELS, parseMapLayout } from './Levels.js';
+import { UpgradeStore } from './UpgradeStore.js';
 
 export class LevelManager {
     constructor() {
@@ -52,7 +53,15 @@ export class LevelManager {
         const lvl = this.levels[levelId];
         if (!lvl) return;
 
-        // Atualiza estrelas se for recorde pessoal
+        // --- LÓGICA DE MOEDA PARA UPGRADES ---
+        // Se o jogador superou o recorde anterior, ele ganha a diferença em "estrelas gastáveis"
+        // Ex: Tinha 1 estrela, agora ganhou 3. Ele recebe +2 para gastar no UpgradeStore.
+        const newStarsForBank = starsEarned - lvl.stars;
+        if (newStarsForBank > 0) {
+            UpgradeStore.addStars(newStarsForBank);
+        }
+
+        // Atualiza o recorde visual da fase
         if (starsEarned > lvl.stars) {
             lvl.stars = starsEarned;
         }

@@ -384,25 +384,32 @@ function handleBuildLogic() {
             
             // Verifica ocupação e se o jogador tem o dinheiro necessário
             if (!ocupado && money >= selectedTowerType.price) {
-                // 1. Cria a nova torre
-                towers.push(new Tower(col, row, selectedTowerType));
+                
+                // --- AJUSTE AQUI ---
+                // Passamos apenas a string do tipo (ex: 'ICE'), 
+                // pois a classe Tower agora usa getTowerStats(type) internamente.
+                const novaTorre = new Tower(col, row, selectedTowerType.type);
+                towers.push(novaTorre);
                 
                 // 2. Cobra o preço
                 money -= selectedTowerType.price;
                 
-                // 3. Reseta a seleção para não construir várias em sequência sem querer
+                // 3. Reseta a seleção
+                const lastUsedType = selectedTowerType; // Guardamos para o updateHUD se necessário
                 selectedTowerType = null; 
                 
-                // 4. ATUALIZAÇÃO CRUCIAL: 
-                // Chamamos o updateHUD que, por sua vez, deve chamar o 
-                // UIManager.createTowerButtons(money, ...) para atualizar as cores dos botões
+                // 4. ATUALIZAÇÃO DA UI
+                // Importante: Passar o novo saldo de 'money' para o UIManager 
+                // para que os botões que ficaram caros demais fiquem cinzas (disabled).
                 updateHUD();
                 
+                // Se o seu updateHUD não chama o UIManager diretamente, você pode forçar aqui:
+                // UIManager.createTowerButtons(money, null, onSelectCallback);
+
                 // 5. Limpa a seleção do clique/input
                 input.clearSelection();
 
-                // Dica: Tocar um som de construção aqui ficaria ótimo!
-                // playSound(SFX.build); 
+                console.log(`Construída: ${novaTorre.name} em [${col}, ${row}]`);
             }
         }
     }

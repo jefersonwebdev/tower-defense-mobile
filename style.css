@@ -4,45 +4,65 @@
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
     --accent-color: #3b82f6;
+    --text-dark: #2d3436;
 
     /* Cores do Menu e Fundo */
-    --menu-bg-color: #2c3e50;           /* Fundo da tela (azul escuro) */
-    --map-bg-color: #dcdde1;            /* Fundo do mapa (cinza claro/areia) */
-    --header-footer-bg: rgba(0, 0, 0, 0.6); /* Faixas pretas semi-transparentes */
+    --menu-bg-color:
+        #2c3e50;
+    /* Fundo da tela (azul escuro) */
+    --map-bg-color: #dcdde1;
+    /* Fundo do mapa (cinza claro/areia) */
+    --header-footer-bg: rgba(0, 0, 0, 0.6);
+    /* Faixas pretas semi-transparentes */
 
     /* Cores das Fases (Bolinhas) */
-    --level-unlocked-start: #4cd137;    /* Verde brilhante (topo) */
-    --level-unlocked-end: #44bd32;      /* Verde escuro (baixo) */
-    --level-locked-bg: #95a5a6;         /* Cinza para fases travadas */
-    --level-border-color: #ffffff;      /* Borda das bolinhas liberadas */
+    --level-unlocked-start: #4cd137;
+    /* Verde brilhante (topo) */
+    --level-unlocked-end: #44bd32;
+    /* Verde escuro (baixo) */
+    --level-locked-bg: #95a5a6;
+    /* Cinza para fases travadas */
+    --level-border-color: #ffffff;
+    /* Borda das bolinhas liberadas */
     --level-shadow-color: rgba(0, 0, 0, 0.4);
 
     /* Cores de Texto e UI */
-    --text-main-color: #ffffff;         /* Cor do número das fases e títulos */
-    --star-color: #f1c40f;              /* Cor das estrelas (amarelo) */
-    --btn-orange: #e67e22;              /* Cor dos botões Upgrade/Help */
-    --btn-orange-hover: #d35400;        /* Cor do botão ao passar o mouse */
+    --text-main-color: #ffffff;
+    /* Cor do número das fases e títulos */
+    --star-color: #f1c40f;
+    /* Cor das estrelas (amarelo) */
+    --btn-orange: #e67e22;
+    /* Cor dos botões Upgrade/Help */
+    --btn-orange-hover: #d35400;
+    /* Cor do botão ao passar o mouse */
 
     /* ... suas outras variáveis ... */
-    --star-active-color: #f1c40f;   /* Amarelo brilhante para ganhas */
-    --star-inactive-color: #d1d1d1; /* Cinza claro ou vermelho escuro para vazias */
-    --star-outline: #000000;        /* Contorno para destacar */
+    --star-active-color: #f1c40f;
+    /* Amarelo brilhante para ganhas */
+    --star-inactive-color: #d1d1d1;
+    /* Cinza claro ou vermelho escuro para vazias */
+    --star-outline: #000000;
+    /* Contorno para destacar */
+    --z-index-1: 100;
+    --z-index-2: 101;
+    --z-index-3: 103;
+    --z-index-4: 104;
 
 
     /* ICONES SVG (Data URIs) */
     --icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/%3E%3C/svg%3E");
-    
+
     --icon-star-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23f1c40f' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'/%3E%3C/svg%3E");
-    
+
     --icon-star-inactive: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='rgba(0,0,0,0.2)' stroke='rgba(0,0,0,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'/%3E%3C/svg%3E");
 
     --icon-upgrade: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M13 10V3L4 13h7v7l9-10z'/%3E%3C/svg%3E");
-    
+
     --icon-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z'/%3E%3C/svg%3E");
 
     /* ICONE HOME (Casinha) */
     --icon-home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/%3E%3C/svg%3E");
-    
+
     /* ICONE ESTRELA PLACAR (Pode ser o mesmo da ativa, ou uma variação) */
     --icon-star-ui: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23f1c40f' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'/%3E%3C/svg%3E");
 
@@ -53,13 +73,16 @@
     --icon-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
 }
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* Impede rolagem no mobile */
-    background-color: #1a1a1a; /* Fundo escuro fora do canvas */
+    overflow: hidden;
+    /* Impede rolagem no mobile */
+    background-color: #1a1a1a;
+    /* Fundo escuro fora do canvas */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,8 +90,9 @@ body, html {
 
 #gameCanvas {
     display: block;
-    touch-action: none; /* CRÍTICO: Desativa gestos do navegador no jogo */
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    touch-action: none;
+    /* CRÍTICO: Desativa gestos do navegador no jogo */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 #tower-inventory {
@@ -106,7 +130,8 @@ body, html {
 }
 
 #game-container {
-    position: relative; /* Necessário para que a UI flutue sobre o canvas */
+    position: relative;
+    /* Necessário para que a UI flutue sobre o canvas */
     width: 100vw;
     height: 100dvh;
     display: flex;
@@ -121,11 +146,13 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Deixa o toque passar para o canvas por padrão */
+    pointer-events: none;
+    /* Deixa o toque passar para o canvas por padrão */
 }
 
 #tower-inventory {
-    pointer-events: auto; /* Reativa o toque apenas nos botões */
+    pointer-events: auto;
+    /* Reativa o toque apenas nos botões */
     position: absolute;
     bottom: 20px;
     left: 50%;
@@ -146,14 +173,25 @@ body, html {
     padding: 10px;
     border-radius: 8px;
     font-family: sans-serif;
-    pointer-events: none; /* Para não atrapalhar o clique no mapa */
+    pointer-events: none;
+    /* Para não atrapalhar o clique no mapa */
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-#label-money { color: #f1c40f; font-weight: bold; } /* Amarelo para dinheiro */
-#label-lives { color: #e74c3c; font-weight: bold; } /* Vermelho para vida */
+#label-money {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+/* Amarelo para dinheiro */
+#label-lives {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Vermelho para vida */
 
 /* Botão de Próxima Onda */
 #btn-next-wave {
@@ -169,7 +207,8 @@ body, html {
     font-size: 14px;
     text-transform: uppercase;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    pointer-events: auto; /* Garante que o clique funcione */
+    pointer-events: auto;
+    /* Garante que o clique funcione */
     cursor: pointer;
     transition: all 0.2s ease;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -211,22 +250,27 @@ body, html {
     position: absolute;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%); /* O segredo para centralizar no meio exato */
-    
+    transform: translateX(-50%);
+    /* O segredo para centralizar no meio exato */
+
     /* Layout da Barra */
     display: flex;
-    flex-direction: row; /* Itens um ao lado do outro */
+    flex-direction: row;
+    /* Itens um ao lado do outro */
     align-items: center;
     gap: 20px;
     padding: 8px 25px;
-    
+
     /* Visual da Imagem */
-    background: rgba(0, 0, 0, 0.5); /* Preto semi-transparente */
-    border-radius: 50px; /* Bordas bem arredondadas */
+    background: rgba(0, 0, 0, 0.5);
+    /* Preto semi-transparente */
+    border-radius: 50px;
+    /* Bordas bem arredondadas */
     border: 2px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px); /* Efeito de vidro fosco */
-    
-    z-index: 100;
+    backdrop-filter: blur(5px);
+    /* Efeito de vidro fosco */
+
+    z-index: var(--z-index-1);
     pointer-events: none;
 }
 
@@ -235,7 +279,8 @@ body, html {
     align-items: center;
     gap: 8px;
     color: white;
-    font-family: 'Arial Black', sans-serif; /* Fonte robusta como na imagem */
+    font-family: 'Arial Black', sans-serif;
+    /* Fonte robusta como na imagem */
     font-size: 20px;
     /* Efeito de contorno no texto */
     text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
@@ -243,13 +288,21 @@ body, html {
 
 .icon {
     font-size: 24px;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
 }
 
 /* Cores específicas se quiser usar emojis ou ícones */
-.heart { color: #ff4757; }
-.coin { color: #eccc68; }
-.wave { color: #ffffff; }
+.heart {
+    color: #ff4757;
+}
+
+.coin {
+    color: #eccc68;
+}
+
+.wave {
+    color: #ffffff;
+}
 
 #game-stats {
     position: absolute;
@@ -261,12 +314,14 @@ body, html {
     align-items: center;
     gap: 25px;
     padding: 10px 30px;
-    background: rgba(0, 0, 0, 0.45); /* Barra escura suave */
+    background: rgba(0, 0, 0, 0.45);
+    /* Barra escura suave */
     border-radius: 50px;
     border: 2px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
-    z-index: 1000;
-    white-space: nowrap; /* Impede que os itens quebrem linha no mobile */
+    z-index: var(--z-index-1);
+    white-space: nowrap;
+    /* Impede que os itens quebrem linha no mobile */
 }
 
 .stat-item {
@@ -280,10 +335,10 @@ body, html {
     font-family: 'Arial Black', Gadget, sans-serif;
     font-size: 22px;
     /* Contorno preto grosso nos números igual à imagem */
-    text-shadow: 
-        2px 2px 0 #000, 
-        -2px -2px 0 #000, 
-        2px -2px 0 #000, 
+    text-shadow:
+        2px 2px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
         -2px 2px 0 #000,
         0px 2px 0 #000;
 }
@@ -292,12 +347,20 @@ body, html {
 .icon {
     width: 28px;
     height: 28px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
-.heart-svg { fill: #ff4757; } /* Vermelho Vibrante */
+.heart-svg {
+    fill: #ff4757;
+}
 
-.wave-svg { fill: #ffffff; } /* Branco para a caveira */
+/* Vermelho Vibrante */
+
+.wave-svg {
+    fill: #ffffff;
+}
+
+/* Branco para a caveira */
 
 #game-stats {
     position: absolute;
@@ -312,7 +375,7 @@ body, html {
     border-radius: 50px;
     border: 2px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
-    z-index: 1000;
+    z-index: var(--z-index-1);
 }
 
 .stat-item {
@@ -336,7 +399,7 @@ body, html {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
 }
 
 /* Ícone de Coração (Vermelho) */
@@ -358,15 +421,33 @@ body, html {
 
 /* Definição da Animação de Pulso */
 @keyframes heart-pulse {
-    0% { transform: scale(1); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
-    30% { transform: scale(1.4); filter: drop-shadow(0 0 10px #ff4757) brightness(1.3); } /* Zoom e Brilho */
-    60% { transform: scale(0.9); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); } /* Encolhe levemente */
-    100% { transform: scale(1); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    30% {
+        transform: scale(1.4);
+        filter: drop-shadow(0 0 10px #ff4757) brightness(1.3);
+    }
+
+    /* Zoom e Brilho */
+    60% {
+        transform: scale(0.9);
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Encolhe levemente */
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+    }
 }
 
 /* Classe CSS que aplica a animação */
 .icon.heart.damage-taken {
-    animation: heart-pulse 0.4s ease-out; /* Executa a animação uma vez */
+    animation: heart-pulse 0.4s ease-out;
+    /* Executa a animação uma vez */
 }
 
 #start-screen {
@@ -376,11 +457,13 @@ body, html {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px); /* Efeito de vidro fosco no fundo */
+    backdrop-filter: blur(10px);
+    /* Efeito de vidro fosco no fundo */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Fica acima de tudo */
+    z-index: var(--z-index-1);
+    /* Fica acima de tudo */
     transition: opacity 0.5s ease;
 }
 
@@ -426,9 +509,17 @@ body, html {
 }
 
 @keyframes button-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-    70% { box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(46, 204, 113, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
 }
 
 
@@ -439,11 +530,11 @@ body, html {
     /* Posicionamento estratégico para o polegar */
     bottom: 20px;
     right: 20px;
-    
+
     /* Tamanho confortável para toque (mínimo 44px) */
     padding: 15px 25px;
     min-width: 140px;
-    
+
     /* Visual de Jogo */
     background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
     color: white;
@@ -453,13 +544,13 @@ body, html {
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    
+
     /* Sombra e Profundidade */
-    box-shadow: 0 6px 0 #1e8449, 0 8px 15px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 0 #1e8449, 0 8px 15px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-    z-index: 1100;
+    z-index: var(--z-index-2);
     transition: all 0.1s active;
-    
+
     /* Evita seleção de texto ao clicar rápido */
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -468,7 +559,7 @@ body, html {
 /* Efeito de "Pressionado" igual a botões de jogos reais */
 #btn-next-wave:active {
     transform: translateY(4px);
-    box-shadow: 0 2px 0 #1e8449, 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 0 #1e8449, 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Estado Desativado (Durante a onda) */
@@ -485,11 +576,11 @@ body, html {
     /* Posicionamento no canto inferior direito */
     bottom: 15px;
     right: 15px;
-    
+
     /* Tamanho controlado: não deixamos ele crescer infinitamente */
-    width: 140px; 
+    width: 140px;
     height: 55px;
-    
+
     /* Estilo Visual */
     background: linear-gradient(to bottom, #2ecc71, #27ae60);
     color: white;
@@ -497,18 +588,18 @@ body, html {
     font-size: 14px;
     border: none;
     border-radius: 12px;
-    
+
     /* Efeito de profundidade (o "shading" da imagem) */
     border-bottom: 4px solid #1e8449;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
     /* Centralização do texto interna */
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    
-    z-index: 1500;
+
+    z-index: var(--z-index-2);
     cursor: pointer;
     transition: transform 0.1s;
 }
@@ -531,28 +622,34 @@ body, html {
 
 .fab {
     position: absolute;
-    bottom: 20px; /* Distância da borda inferior */
-    right: 20px;  /* Distância da borda direita */
-    width: 65px;  /* Tamanho perfeito para o polegar */
+    bottom: 110px;
+    /* Distância da borda inferior */
+    right: 20px;
+    /* Distância da borda direita */
+    width: 65px;
+    /* Tamanho perfeito para o polegar */
     height: 65px;
-    
+
     /* Design Redondo e Flutuante */
     border-radius: 50%;
-    background: #2ecc71; /* Verde Google */
+    background: #2ecc71;
+    /* Verde Google */
     border: none;
-    
+
     /* Sombras de Elevação (Material Design) */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
-    
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+
     /* Centralização dos Ícones */
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    z-index: 1999 !important; /* Coloca o botão na frente de TUDO */
+
+    z-index: var(--z-index-2);
+    /* Coloca o botão na frente de TUDO */
     cursor: pointer;
     transition: all 0.2s ease-out;
-    pointer-events: auto !important; /* Força o navegador a aceitar cliques */
+    pointer-events: auto !important;
+    /* Força o navegador a aceitar cliques */
 
     /* Evita seleção de texto e highlight azul no mobile */
     user-select: none;
@@ -562,7 +659,7 @@ body, html {
 /* Efeito de Clique (Pressionado) */
 .fab:active {
     transform: scale(0.95);
-    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
     background: #27ae60;
 }
 
@@ -575,9 +672,12 @@ body, html {
 
 .icon-container svg {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    fill: white; /* Cor do ícone */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    fill: white;
+    /* Cor do ícone */
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -588,6 +688,7 @@ body, html {
     opacity: 0;
     transform: scale(0.5) rotate(-90deg);
 }
+
 .fab .icon-play {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -595,13 +696,15 @@ body, html {
 
 /* Estado Ativo (Onda em Andamento): Esconde Play, Mostra Pause */
 .fab.wave-active {
-    background: #e74c3c; /* Muda para Vermelho (Stop/Pause) */
+    background: #e74c3c;
+    /* Muda para Vermelho (Stop/Pause) */
 }
 
 .fab.wave-active .icon-play {
     opacity: 0;
     transform: scale(0.5) rotate(90deg);
 }
+
 .fab.wave-active .icon-pause {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -613,14 +716,18 @@ body, html {
 
 .overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: var(--z-index-1);
 }
 
+/*
 .modal-content {
     background: #2c3e50;
     padding: 30px;
@@ -631,8 +738,10 @@ body, html {
     width: 80%;
     max-width: 400px;
 }
-
-#name-input-section { margin: 20px 0; }
+*/
+#name-input-section {
+    margin: 20px 0;
+}
 
 #player-name {
     padding: 10px;
@@ -643,7 +752,7 @@ body, html {
 }
 
 .high-scores-section {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     padding: 15px;
     border-radius: 10px;
     margin: 20px 0;
@@ -659,7 +768,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     padding: 5px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-main {
@@ -677,15 +786,20 @@ body, html {
 /* Animação de brilho dourado pulsante */
 @keyframes goldenGlow {
     0% {
-        color: #f1c40f; /* Amarelo base */
+        color: #f1c40f;
+        /* Amarelo base */
         text-shadow: 0 0 10px rgba(241, 196, 15, 0.7), 0 0 20px rgba(241, 196, 15, 0.5);
     }
+
     50% {
-        color: #fceea7; /* Quase branco */
+        color: #fceea7;
+        /* Quase branco */
         text-shadow: 0 0 20px rgba(241, 196, 15, 1), 0 0 30px rgba(241, 196, 15, 0.8), 0 0 40px rgba(241, 196, 15, 0.6);
     }
+
     100% {
-        color: #f1c40f; /* Volta ao base */
+        color: #f1c40f;
+        /* Volta ao base */
         text-shadow: 0 0 10px rgba(241, 196, 15, 0.7), 0 0 20px rgba(241, 196, 15, 0.5);
     }
 }
@@ -693,14 +807,16 @@ body, html {
 /* Classe que aplica o brilho e a animação */
 .new-high-score-glow {
     animation: goldenGlow 1s ease-in-out infinite;
-    font-size: 1.2em; /* Aumenta um pouco o tamanho para dar destaque */
+    font-size: 1.2em;
+    /* Aumenta um pouco o tamanho para dar destaque */
     font-weight: bold;
 }
 
 /* Garante que o texto de recorde no modal tenha espaço para o brilho */
 .high-scores-section h3 {
     margin-bottom: 15px;
-    color: #f1c40f; /* Título também fica dourado */
+    color: #f1c40f;
+    /* Título também fica dourado */
 }
 
 /* Exemplo de Estilo para o Menu de Fases */
@@ -712,7 +828,7 @@ body, html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: var(--z-index-1);
     transition: opacity 0.4s;
 }
 
@@ -762,12 +878,13 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100; /* Garante que fique acima de tudo */
+    z-index: var(--z-index-1);
+    /* Garante que fique acima de tudo */
 }
 
 /* Ocultar a HUD enquanto está no menu */
 #ui-layer {
-    display: none; 
+    display: none;
 }
 
 
@@ -854,7 +971,7 @@ body, html {
     height: 20px;
     border-radius: 50%;
     margin-bottom: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .tower-details strong {
@@ -866,7 +983,8 @@ body, html {
 
 .tower-details span {
     font-size: 10px;
-    color: #2ecc71; /* Cor do dinheiro */
+    color: #2ecc71;
+    /* Cor do dinheiro */
     font-weight: bold;
 }
 
@@ -876,9 +994,17 @@ body, html {
 }
 
 @keyframes pulse-gold {
-    0% { background: rgba(241, 196, 15, 0.1); }
-    50% { background: rgba(241, 196, 15, 0.3); }
-    100% { background: rgba(241, 196, 15, 0.1); }
+    0% {
+        background: rgba(241, 196, 15, 0.1);
+    }
+
+    50% {
+        background: rgba(241, 196, 15, 0.3);
+    }
+
+    100% {
+        background: rgba(241, 196, 15, 0.1);
+    }
 }
 
 
@@ -892,7 +1018,7 @@ body, html {
     background-color: var(--menu-bg-color);
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    z-index: var(--z-index-1);
 }
 
 /* Header (Topo) */
@@ -911,7 +1037,8 @@ body, html {
 /* O MAPA (Centro) */
 .map-container {
     position: relative;
-    flex-grow: 1; /* Faz o mapa esticar e ocupar a tela toda do celular */
+    flex-grow: 1;
+    /* Faz o mapa esticar e ocupar a tela toda do celular */
     width: 100vw;
     background-color: var(--map-bg-color);
     overflow: hidden;
@@ -926,7 +1053,8 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translate(-50%, -50%); /* Centraliza no ponto exato das coordenadas */
+    transform: translate(-50%, -50%);
+    /* Centraliza no ponto exato das coordenadas */
     font-size: 24px;
     font-weight: bold;
     color: var(--text-main-color);
@@ -985,7 +1113,8 @@ body, html {
 /* Container das estrelas acima da fase */
 .node-stars {
     position: absolute;
-    top: -30px; /* Ajuste conforme necessário */
+    top: -30px;
+    /* Ajuste conforme necessário */
     width: 100%;
     display: flex;
     justify-content: center;
@@ -996,10 +1125,10 @@ body, html {
 /* Estilo individual de cada estrela */
 .star {
     font-size: 18px;
-    text-shadow: 1px 1px 0 var(--star-outline), 
-                 -1px -1px 0 var(--star-outline),
-                  1px -1px 0 var(--star-outline),
-                 -1px 1px 0 var(--star-outline);
+    text-shadow: 1px 1px 0 var(--star-outline),
+        -1px -1px 0 var(--star-outline),
+        1px -1px 0 var(--star-outline),
+        -1px 1px 0 var(--star-outline);
     transition: transform 0.3s ease;
 }
 
@@ -1036,8 +1165,13 @@ body, html {
     display: inline-block;
 }
 
-.star.active { background-image: var(--icon-star-active); }
-.star.inactive { background-image: var(--icon-star-inactive); }
+.star.active {
+    background-image: var(--icon-star-active);
+}
+
+.star.inactive {
+    background-image: var(--icon-star-inactive);
+}
 
 /* Ícones nos Botões do Footer */
 .btn-footer::before {
@@ -1051,15 +1185,21 @@ body, html {
     background-repeat: no-repeat;
 }
 
-.btn-upgrade::before { background-image: var(--icon-upgrade); }
-.btn-help::before { background-image: var(--icon-help); }
+.btn-upgrade::before {
+    background-image: var(--icon-upgrade);
+}
+
+.btn-help::before {
+    background-image: var(--icon-help);
+}
 
 
 /* Botão de Voltar (Home) */
 .btn-back {
     width: 40px;
     height: 40px;
-    background-color: rgba(255, 255, 255, 0.2); /* Fundo sutil */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Fundo sutil */
     background-image: var(--icon-home);
     background-size: 24px;
     background-repeat: no-repeat;
@@ -1067,7 +1207,8 @@ body, html {
     border: 2px solid white;
     border-radius: 8px;
     cursor: pointer;
-    color: transparent; /* Esconde o emoji de fallback 🏠 */
+    color: transparent;
+    /* Esconde o emoji de fallback 🏠 */
     overflow: hidden;
     transition: transform 0.1s;
 }
@@ -1100,7 +1241,8 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; /* Espaço entre ícone e texto */
+    gap: 8px;
+    /* Espaço entre ícone e texto */
     padding: 10px 20px;
     background-color: var(--btn-orange);
     border: none;
@@ -1109,14 +1251,16 @@ body, html {
     font-weight: bold;
     font-family: 'Arial', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
     transition: transform 0.1s, box-shadow 0.1s;
+
+    margin: 0 auto;
 }
 
 /* Efeito de clique (Botão "afunda") */
 .btn-footer:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Inserção dos Ícones SVG */
@@ -1142,13 +1286,15 @@ body, html {
 /* Overlay que escurece o fundo */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: var(--z-index-2);
 }
 
 /* Caixa do Modal */
@@ -1162,6 +1308,21 @@ body, html {
     color: white;
 }
 
+.modal-content {
+    background: var(--bg-white);
+    background: var(--menu-bg-color);
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    transform: translateY(20px);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    position: relative;
+    overflow: hidden;
+}
+
 /* Container das Estrelas no Modal */
 .modal-stars-container {
     display: flex;
@@ -1171,16 +1332,25 @@ body, html {
 }
 
 .modal-stars-container .star {
-    width: 60px; /* Estrelas grandes no modal */
+    width: 60px;
+    /* Estrelas grandes no modal */
     height: 60px;
     filter: drop-shadow(0 0 10px rgba(241, 196, 15, 0.5));
 }
 
 /* Animação simples de entrada */
 @keyframes popIn {
-    0% { transform: scale(0); }
-    80% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(0);
+    }
+
+    80% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .modal-stars-container .star.active {
@@ -1190,7 +1360,7 @@ body, html {
 
 /* Estado Base: Trancado (Mantenha assim) */
 .level-node.locked {
-    
+
     filter: grayscale(1);
     opacity: 0.8;
     transition: all 0.5s ease;
@@ -1208,7 +1378,8 @@ body, html {
 .level-node.unlock-animation {
     animation: unlockPulse 0.8s ease-in-out forwards !important;
     filter: grayscale(0) !important;
-    background-color: #4CAF50 !important; /* Cor da fase aberta */
+    background-color: #4CAF50 !important;
+    /* Cor da fase aberta */
     opacity: 1 !important;
     z-index: 999;
 }
@@ -1222,9 +1393,18 @@ body, html {
 
 /* Pulso de brilho (Ajustado para não quebrar o centro) */
 @keyframes unlockPulse {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.3); box-shadow: 0 0 30px #fff; }
-    100% { transform: translate(-50%, -50%) scale(1); }
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.3);
+        box-shadow: 0 0 30px #fff;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 /* Container que segura a imagem da torre */
@@ -1234,7 +1414,8 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.2); /* Fundo sutil para destacar o metal */
+    background: rgba(0, 0, 0, 0.2);
+    /* Fundo sutil para destacar o metal */
     border-radius: 4px;
     margin-right: 10px;
 }
@@ -1245,7 +1426,7 @@ body, html {
     height: 40px;
     object-fit: contain;
     /* Filtro para dar um "pop" nas cores industriais */
-    filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
 }
 
 /* Estilo do botão quando selecionado */
@@ -1263,11 +1444,13 @@ body, html {
 }
 
 .tower-btn.disabled .tower-render-img {
-    filter: grayscale(1) brightness(0.5); /* Fica cinza e escuro */
+    filter: grayscale(1) brightness(0.5);
+    /* Fica cinza e escuro */
 }
 
 .tower-btn.disabled .price-tag {
-    color: #ff4757; /* Preço fica vermelho */
+    color: #ff4757;
+    /* Preço fica vermelho */
     font-weight: bold;
 }
 
@@ -1277,9 +1460,19 @@ body, html {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    75% {
+        transform: translateX(4px);
+    }
 }
 
 /* No seu style.css */
@@ -1290,51 +1483,68 @@ body, html {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    display: flex; /* O JS controla com none/flex */
+    display: flex;
+    /* O JS controla com none/flex */
     justify-content: center;
     align-items: center;
-    z-index: 10000; /* Base para todos os menus */
+    z-index: var(--z-index-1);
+    /* Base para todos os menus */
 }
 
 /* Forçamos o Settings a ficar na frente de qualquer outro overlay */
 #settings-screen {
-    z-index: 2000; 
-    background: rgba(0, 0, 0, 0.9); /* Um pouco mais escuro para dar foco */
+    z-index: var(--z-index-2);
+    background: rgba(0, 0, 0, 0.9);
+    /* Um pouco mais escuro para dar foco */
 }
 
 /* O container do switch */
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
 }
 
 /* Esconde o checkbox padrão */
-.switch input { opacity: 0; width: 0; height: 0; }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
 /* O trilho do slider */
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 24px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px; width: 18px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
 }
 
-input:checked + .slider { background-color: #2196F3; }
-input:checked + .slider:before { transform: translateX(26px); }
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
 
 /* Estilo do botão de Reset */
 .danger-zone {
@@ -1368,7 +1578,8 @@ input:checked + .slider:before { transform: translateX(26px); }
 }
 
 .btn-secondary {
-    background: #4b6584; /* Um azul mais discreto */
+    background: #4b6584;
+    /* Um azul mais discreto */
     color: white;
     border: none;
     padding: 10px 20px;

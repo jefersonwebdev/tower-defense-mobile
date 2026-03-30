@@ -4,20 +4,28 @@
 
 import { Projectile } from './Projectile.js';
 import { SFX, playSound } from '../core/AudioManager.js';
+import { getTowerStats } from '../core/TowerTypes.js';
 
 export class Tower {
-    constructor(col, row, config = {}) {
+    constructor(col, row, type = 'BASIC') {
         this.col = col;
         this.row = row;
+        this.type = type;
 
-        this.type = config.type || 'BASIC';
-        this.name = config.name || 'Torre';
-        this.range = config.range || 3;
-        this.fireRate = config.fireRate || 1000;
-        this.color = config.color || "#3498db";
-        this.bulletColor = config.bulletColor || "#f1c40f";
+        // BUSCA DINÂMICA: Pega os dados já calculados com upgrades
+        const stats = getTowerStats(type);
+
+        // Atribui os valores das estatísticas à instância
+        this.name = stats.name;
+        this.color = stats.color;
+        this.bulletColor = stats.bulletColor;
+        this.range = stats.range;           // Já vem com bônus de alcance
+        this.fireRate = stats.fireRate;
+        this.damage = stats.damage;         // Já vem com bônus de dano
         
-        this.config = config;
+        // Atributos específicos para a Torre de Gelo
+        this.slowEffect = stats.slowEffect || null;
+        this.slowDuration = stats.slowDuration || null;
 
         this.angle = 0;
         this.target = null;
@@ -71,23 +79,30 @@ export class Tower {
     }
 
     shoot(projectilesArray, tileSize) {
-        // Calculamos o centro exato da torre em pixels para o ponto de origem do tiro
-        const centerX = (this.col * tileSize) + (tileSize / 2);
-        const centerY = (this.row * tileSize) + (tileSize / 2);
+    // Calculamos o centro exato da torre em pixels
+    const centerX = (this.col * tileSize) + (tileSize / 2);
+    const centerY = (this.row * tileSize) + (tileSize / 2);
 
-        const bullet = new Projectile(
-            centerX, 
-            centerY, 
-            this.target, 
-            { 
-                ...this.config,
-                color: this.color // O projétil herda a cor da torre para o efeito de rastro
-            }
-        );
-        
-        projectilesArray.push(bullet);
-        playSound(SFX.shoot);
-    }
+    // CRIAMOS O OBJETO DE CONFIGURAÇÃO MANUALMENTE COM OS DADOS DA INSTÂNCIA
+    const bulletConfig = {
+        type: this.type,           // Passa 'ICE'
+        damage: this.damage,       // Dano atualizado
+        color: this.color,         // Cor do rastro
+        slowEffect: this.slowEffect,     // Multiplicador (ex: 0.5)
+        slowDuration: this.slowDuration, // Duração (ex: 1500)
+        speed: 5                   // Velocidade do projétil
+    };
+
+    const bullet = new Projectile(
+        centerX, 
+        centerY, 
+        this.target, 
+        bulletConfig
+    );
+    
+    projectilesArray.push(bullet);
+    playSound(SFX.shoot);
+}
 
     draw(ctx, tileSize, gameMap) {
     const x = this.col * tileSize;

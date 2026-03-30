@@ -1,15 +1,23 @@
 /**
- * PROJECTILE.JS - Sistema de Projéteis com Rastro de Luz
+ * PROJECTILE.JS - Sistema de Projéteis com Rastro de Luz e Efeitos de Status
  */
 export class Projectile {
     constructor(x, y, target, config) {
         this.x = x;
         this.y = y;
         this.target = target;
+        
+        // Atributos base
         this.speed = config.speed || 5;
         this.damage = config.damage || 10;
         this.color = config.color || "#ffffff";
+        this.type = config.type || 'BASIC'; // Importante para identificar o gelo
         this.isDead = false;
+
+        // --- LÓGICA DE GELO ---
+        // Se a config da torre tiver slow, o projétil armazena
+        this.slowEffect = config.slowEffect || null;
+        this.slowDuration = config.slowDuration || null;
         
         // Histórico de posições para o rastro (Trail)
         this.history = [];
@@ -34,13 +42,28 @@ export class Projectile {
         const dy = (this.target.y * tileSize) - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
+        // COLISÃO
         if (distance < 10) {
-            this.target.takeDamage(this.damage);
-            this.isDead = true;
+            this.hitTarget();
         } else {
             this.x += (dx / distance) * this.speed;
             this.y += (dy / distance) * this.speed;
         }
+    }
+
+    /**
+     * Gerencia o impacto no alvo
+     */
+    hitTarget() {
+        // 1. Aplica o Dano
+        this.target.takeDamage(this.damage);
+
+        // 2. Aplica o Gelo (se for o caso)
+        if (this.type === 'ICE' && this.slowEffect && this.target.applySlow) {
+            this.target.applySlow(this.slowEffect, this.slowDuration);
+        }
+
+        this.isDead = true;
     }
 
     draw(ctx, tileSize) {
@@ -56,17 +79,17 @@ export class Projectile {
         });
 
         // 2. BRILHO EXTERNO (GLOW)
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = (this.type === 'ICE') ? 15 : 10; // Gelo brilha um pouco mais
         ctx.shadowColor = this.color;
 
         // 3. NÚCLEO DO PROJÉTIL
         ctx.beginPath();
         ctx.arc(this.x, this.y, tileSize * 0.08, 0, Math.PI * 2);
-        ctx.fillStyle = "white"; // Núcleo branco para parecer quente/energia
+        // Se for gelo, o núcleo pode ser um azul bem clarinho em vez de branco puro
+        ctx.fillStyle = (this.type === 'ICE') ? "#e0f7ff" : "white"; 
         ctx.fill();
 
-        // Reseta efeitos de sombra para não pesar o desempenho
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 0; // Reseta
 
         // 4. BORDA COLORIDA
         ctx.strokeStyle = this.color;
