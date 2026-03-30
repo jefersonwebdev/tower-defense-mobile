@@ -513,6 +513,19 @@ function endGame() {
     document.getElementById('game-over-screen').style.display = 'flex';
 }
 
+const restartButton = document.getElementById('btn-restart'); // Use o ID correto do seu HTML
+
+if (restartButton) {
+    restartButton.onclick = () => {
+        // Agora sim, recarregamos a página para limpar tudo
+        location.reload(); 
+        
+        // OU, se quiser um reset suave sem recarregar a página:
+        // resetGameVariables(); 
+    };
+}
+
+
 function handleProjectiles() {
     for (let i = projectiles.length - 1; i >= 0; i--) {
         projectiles[i].update(TILE_SIZE);

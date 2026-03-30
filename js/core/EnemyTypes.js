@@ -38,9 +38,9 @@ export const ENEMY_TYPES = {
         speed: 0.045,   // Mais que o dobro da velocidade
         color: "#f1c40f", // Amarelo
         reward: 15,
-        size: 0.25,      // Menor e mais difícil de clicar
+        size: 0.35,      // Menor e mais difícil de clicar
         //iconData: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNrdWxsLWljb24gbHVjaWRlLXNrdWxsIj48cGF0aCBkPSJtMTIuNSAxNy0uNS0xLS41IDFoMXoiLz48cGF0aCBkPSJNMTUgMjJhMSAxIDAgMCAwIDEtMXYtMWEyIDIgMCAwIDAgMS41Ni0zLjI1IDggOCAwIDEgMC0xMS4xMiAwQTIgMiAwIDAgMCA4IDIwdjFhMSAxIDAgMCAwIDEgMXoiLz48Y2lyY2xlIGN4PSIxNSIgY3k9IjEyIiByPSIxIi8+PGNpcmNsZSBjeD0iOSIgY3k9IjEyIiByPSIxIi8+PC9zdmc+'
-        spriteSheetSrc: 'assets/enemies/zumbi.png',
+        spriteSheetSrc: 'assets/enemies/barata.png',
         frameWidth: 235,
         frameHeight: 192,
         animations: {
@@ -58,7 +58,7 @@ export const ENEMY_TYPES = {
         reward: 30,
         size: 0.5,       // Grandão
         //iconData: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNrdWxsLWljb24gbHVjaWRlLXNrdWxsIj48cGF0aCBkPSJtMTIuNSAxNy0uNS0xLS41IDFoMXoiLz48cGF0aCBkPSJNMTUgMjJhMSAxIDAgMCAwIDEtMXYtMWEyIDIgMCAwIDAgMS41Ni0zLjI1IDggOCAwIDEgMC0xMS4xMiAwQTIgMiAwIDAgMCA4IDIwdjFhMSAxIDAgMCAwIDEgMXoiLz48Y2lyY2xlIGN4PSIxNSIgY3k9IjEyIiByPSIxIi8+PGNpcmNsZSBjeD0iOSIgY3k9IjEyIiByPSIxIi8+PC9zdmc+'
-        spriteSheetSrc: 'assets/enemies/cogumelo.png',
+        spriteSheetSrc: 'assets/enemies/besouro.png',
         frameWidth: 235,
         frameHeight: 192,
         animations: {
