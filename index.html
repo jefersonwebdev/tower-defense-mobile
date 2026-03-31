@@ -56,7 +56,7 @@
 
         <div id="level-select-screen" class="screen" style="display: none;">
             <div class="level-header">
-                <button class="btn-back" onclick="showScreen('main-menu')"></button>
+                <button class="btn-back" onclick="showScreen('start-screen')"></button>
                 <div class="stars-display"><span id="total-stars-count">0</span>/90</div>
                 <h1>LEVEL SELECT</h1>
             </div>
@@ -73,6 +73,28 @@
             </div>
         </div>
 
+        <!--  TELA DE UPGRADES  -->
+        <div id="upgrade-screen" class="screen hidden">
+            <div class="upgrade-container">
+                <header class="upgrade-header">
+                    <button class="btn-back" onclick="showScreen('level-select-screen')">← VOLTAR</button>
+                    <h1>Upgrades</h1>
+                    <button class="btn-reset-upgrades" onclick="handleResetUpgrades()">
+                        🗑️ RESET
+                    </button>
+                    <div class="star-display">
+                        <span id="upgrade-stars-count">0</span> ⭐
+                    </div>
+                </header>
+
+                <div id="upgrade-list" class="upgrade-grid">
+                </div>
+
+                <footer class="upgrade-footer">
+                    <p>Os upgrades são permanentes para todas as fases!</p>
+                </footer>
+            </div>
+        </div>
 
         <div id="victory-modal" class="modal-overlay" style="display: none;">
             <div class="modal-content">

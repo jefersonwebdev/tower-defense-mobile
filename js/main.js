@@ -8,6 +8,8 @@ import { Map } from './core/Map.js';
 import { Input } from './core/Input.js';
 import { WaveManager } from './core/WaveManager.js';
 import { UIManager } from './core/UIManager.js';
+import { UpgradeUI } from './core/UpgradeUI.js';
+import { UpgradeStore } from './core/UpgradeStore.js';
 import { LevelManager } from './core/LevelManager.js'; // Novo
 import { Tower } from './entities/Tower.js';
 import { Enemy } from './entities/Enemy.js';
@@ -156,6 +158,15 @@ function renderLevelMap() {
     }
 }
 
+
+// No seu arquivo de interface ou main.js
+window.handleResetUpgrades = () => {
+    if (UpgradeStore.resetProgress()) {
+        // Se o reset funcionou, redesenha a tela de upgrades
+        UpgradeUI.render();
+        console.log("Progresso resetado com sucesso.");
+    }
+};
 /**
  * CARREGAMENTO DE NÍVEL
  */
@@ -163,18 +174,27 @@ function startLevel(levelId) {
     currentLevelId = levelId;
     currentLevelData = levelManager.levels[levelId];
 
+    // 1. CALCULA A VIDA COM UPGRADE
+    const VIDA_BASE_DO_JOGO = 10; // O valor padrão sem upgrades
+    const bonusVida = UpgradeStore.getBonus('health'); // Pega o multiplicador (ex: 1.2, 1.4...)
+    
+    // Define a vida máxima para esta partida
+    const globalMaxLives = Math.floor(VIDA_BASE_DO_JOGO * bonusVida);
+
     // Configura o Mapa e WaveManager
     gameMap.setData(currentLevelData.grid);
     waveManager.configure(currentLevelData);
     
-    // Reseta Status usando Vida Global
+    // 2. APLICA AO STATUS DA PARTIDA
     money = currentLevelData.startingMoney || 150;
-    lives = globalMaxLives; // <-- Usa o upgrade do jogador
+    lives = globalMaxLives; // Agora o jogador começa com mais vida!
+    
     score = 0;
     isGameOver = false;
     isPaused = false;
     selectedTowerType = null;
     
+    // Limpeza de arrays
     towers.length = 0;
     enemies.length = 0;
     projectiles.length = 0;
@@ -185,8 +205,9 @@ function startLevel(levelId) {
 
     document.getElementById('level-select-screen').style.display = 'none';
     document.getElementById('ui-layer').style.display = 'block';
+    
     gameStarted = true;
-    updateHUD();
+    updateHUD(); // O HUD já vai mostrar o novo valor de 'lives'
 }
 
 /**
@@ -274,16 +295,30 @@ function updateAndRender(currentTime) {
 
 // 1. Verifique se essa função existe no seu arquivo
 export function showScreen(screenId) {
-    // Esconde todas as divs que têm a classe "screen"
+    // 1. Esconde todas as telas
     document.querySelectorAll('.screen').forEach(s => {
         s.style.display = 'none';
+        s.classList.add('hidden'); // Boa prática para garantir que o CSS aplique
     });
 
-    // Mostra a tela desejada
+    // 2. Mostra a tela alvo
     const target = document.getElementById(screenId);
     if (target) {
         target.style.display = 'flex';
-        console.log("Tela atual:", screenId);
+        target.classList.remove('hidden');
+        console.log("Navegando para:", screenId);
+
+        // --- LÓGICA DE INICIALIZAÇÃO ESPECÍFICA ---
+        
+        // Toda vez que abrir a tela de upgrade, desenhamos os cards atualizados
+        if (screenId === 'upgrade-screen') {
+            UpgradeUI.render(); 
+        }
+
+        // Se você tiver uma lógica de resetar o menu de níveis, pode chamar aqui também
+        if (screenId === 'level-select') {
+            // UIManager.renderLevelMenu(...);
+        }
     }
 }
 
