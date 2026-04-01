@@ -25,43 +25,49 @@ export const UpgradeStore = {
                 lvl: 1,
                 multiplier: 0.15,
                 costs: [5, 10, 20] // Apenas 3 upgrades disponíveis
+            },
+            meteor: {
+                lvl: 1, // Começa no 1 (bloqueado)
+                multiplier: 1,
+                costs: [1], // Custa 15 estrelas para desbloquear o nível 2
+                desc: "Chame um meteoro que causa dano em área."
             }
         }
     },
 
     // Adicione dentro do objeto UpgradeStore
     resetProgress() {
-    if (!confirm("Deseja resetar seus upgrades? Você receberá todas as estrelas gastas de volta!")) {
-        return false;
-    }
-
-    let totalRefund = 0;
-
-    // Percorre cada tipo de upgrade (damage, range, ice, health)
-    Object.keys(this.state.upgrades).forEach(key => {
-        const up = this.state.upgrades[key];
-        
-        // Enquanto o nível for maior que 1, calculamos o reembolso
-        while (up.lvl > 1) {
-            // O custo do nível ATUAL que ele tem é o índice (lvl - 2) no array costs
-            // Ex: Se ele é Lv 2, o custo pago foi o costs[0]
-            const indexPago = up.lvl - 2;
-            const custoPago = up.costs[indexPago];
-            
-            totalRefund += custoPago;
-            up.lvl--; // Baixa o nível um por um até chegar em 1
+        if (!confirm("Deseja resetar seus upgrades? Você receberá todas as estrelas gastas de volta!")) {
+            return false;
         }
-    });
 
-    // Devolve as estrelas ao saldo
-    this.state.stars += totalRefund;
-    
-    // Salva o novo estado (Lv 1 para todos e estrelas devolvidas)
-    this.save();
-    
-    console.log(`Reset concluído! Reembolso de ${totalRefund} estrelas.`);
-    return true;
-},
+        let totalRefund = 0;
+
+        // Percorre cada tipo de upgrade (damage, range, ice, health)
+        Object.keys(this.state.upgrades).forEach(key => {
+            const up = this.state.upgrades[key];
+
+            // Enquanto o nível for maior que 1, calculamos o reembolso
+            while (up.lvl > 1) {
+                // O custo do nível ATUAL que ele tem é o índice (lvl - 2) no array costs
+                // Ex: Se ele é Lv 2, o custo pago foi o costs[0]
+                const indexPago = up.lvl - 2;
+                const custoPago = up.costs[indexPago];
+
+                totalRefund += custoPago;
+                up.lvl--; // Baixa o nível um por um até chegar em 1
+            }
+        });
+
+        // Devolve as estrelas ao saldo
+        this.state.stars += totalRefund;
+
+        // Salva o novo estado (Lv 1 para todos e estrelas devolvidas)
+        this.save();
+
+        console.log(`Reset concluído! Reembolso de ${totalRefund} estrelas.`);
+        return true;
+    },
 
     load() {
         const saved = localStorage.getItem('td_upgrade_data');

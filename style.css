@@ -1771,3 +1771,133 @@ input:checked+.slider:before {
         padding: 8px 10px;
     }
 }
+
+#btn-meteor {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: #444;
+    border: 2px solid #ff9800;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 24px;
+    overflow: hidden; /* Importante para o efeito de cooldown */
+}
+
+/* A camada de sombra que simula o carregamento */
+.cooldown-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%; /* O JS vai controlar isso de 100% a 0% */
+    background: rgba(0, 0, 0, 0.7);
+    transition: height 0.1s linear;
+    pointer-events: none;
+}
+
+.ability-btn.active-aim {
+    border-color: #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#btn-meteor {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    background: #333;
+    border: 2px solid #ffa500;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#btn-meteor img {
+    width: 30px; /* Ajuste conforme sua imagem */
+    margin-bottom: 2px;
+}
+
+/* Efeito de quando a mira está ativa */
+#btn-meteor.active {
+    box-shadow: 0 0 15px #ff4500;
+    border-color: #ff4500;
+}
+
+/* Container das habilidades */
+#special-abilities-container {
+    position: absolute;
+    bottom: 100px; /* Acima do inventário de torres */
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* Deixa cliques passarem para o mapa, exceto nos botões */
+}
+
+.ability-btn {
+    pointer-events: auto;
+    width: 65px;
+    height: 65px;
+    background: #333;
+    border: 3px solid #ffa500;
+    border-radius: 12px;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s;
+}
+
+.ability-btn:active {
+    transform: scale(0.9);
+}
+
+.ability-btn.hidden {
+    display: none;
+}
+
+/* Efeito de Cooldown (A sombra) */
+.cooldown-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%; /* JS controlará de 100% a 0% */
+    background: rgba(0, 0, 0, 0.7);
+    transition: height 0.1s linear;
+}
+
+/* Quando estiver pronto para usar */
+.ability-btn:not([disabled]):hover {
+    box-shadow: 0 0 15px #ffa500;
+}
+
+/* Quando estiver em modo de mira */
+.ability-btn.active-aim {
+    border-color: #ff4500;
+    animation: pulse-glow 1s infinite;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 5px #ff4500; }
+    50% { box-shadow: 0 0 20px #ff4500; }
+    100% { box-shadow: 0 0 5px #ff4500; }
+}
