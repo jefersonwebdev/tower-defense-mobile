@@ -14,7 +14,7 @@ export const SFX = {
 
 // Ajuste de volumes iniciais
 SFX.shoot.volume = 0.2;
-SFX.explosion.volume = 0.4;
+SFX.explosion.volume = 0.3;
 SFX.damage.volume = 0.6;
 SFX.unlock.volume = 0.5;
 SFX.click.volume = 0.3;

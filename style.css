@@ -1780,7 +1780,7 @@ input:checked+.slider:before {
     border: 2px solid #ff9800;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 14px;
     overflow: hidden; /* Importante para o efeito de cooldown */
 }
 
@@ -1824,10 +1824,7 @@ input:checked+.slider:before {
     cursor: pointer;
 }
 
-#btn-meteor img {
-    width: 30px; /* Ajuste conforme sua imagem */
-    margin-bottom: 2px;
-}
+
 
 /* Efeito de quando a mira está ativa */
 #btn-meteor.active {
@@ -1900,4 +1897,63 @@ input:checked+.slider:before {
     0% { box-shadow: 0 0 5px #ff4500; }
     50% { box-shadow: 0 0 20px #ff4500; }
     100% { box-shadow: 0 0 5px #ff4500; }
+}
+
+
+.ability-btn {
+    position: relative;
+    width: 65px;
+    height: 65px;
+    background: #222;
+    border: 2px solid #ffa500;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Coloca ícone em cima e texto embaixo */
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+}
+
+.ability-icon {
+    width: 30px;  /* Ajuste o tamanho conforme necessário */
+    height: 30px;
+    object-fit: contain; /* Garante que a imagem não distorça */
+    margin-bottom: 2px;
+    pointer-events: none; /* Evita que o clique pegue na imagem em vez do botão */
+}
+
+.ability-btn span {
+    font-size: 9px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.cooldown-overlay {
+    position: absolute;
+    
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 0%; /* O JS vai alterar isso de 100% para 0% */
+    background: rgba(0, 0, 0, 0.6); /* Escurece o ícone enquanto carrega */
+    pointer-events: none;
+    transition: height 0.1s linear;
+    z-index: 2;
+}
+
+/* Quando NÃO estiver em cooldown e NÃO estiver escondido */
+.ability-btn:not(.hidden):not([disabled]) .ability-icon {
+    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.5));
+    animation: pulseIcon 2s infinite;
+}
+
+@keyframes pulseIcon {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }

@@ -182,27 +182,51 @@ window.activateMeteorPlacement = () => {
 };
 
 // No seu listener de clique do Canvas
-canvas.addEventListener('click', (e) => {
-    if (isPlacingMeteor) {
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left);
-        const y = (e.clientY - rect.top);
+// Função auxiliar para pegar a posição correta (Mouse ou Touch)
+function getCanvasCoordinates(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    
+    // Se for touch, pega o primeiro dedo (touches[0]), senão pega o evento normal
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        // ADICIONE 'tileSize' COMO O 4º PARÂMETRO AQUI:
-        const success = SpecialAttacks.useMeteor(x, y, enemies, TILE_SIZE);
+    // AQUI ESTÁ O SEGREDO: Cálculo de escala para Mobile
+    // Se o canvas de 800px estiver sendo exibido em uma tela de 400px, a escala é 2
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-        if (success) {
-            console.log("Meteoro disparado com sucesso em:", x, y);
-            const btn = document.getElementById('btn-meteor');
-            if (btn) btn.classList.remove('active-aim');
-            
-            isPlacingMeteor = false;
-            document.body.style.cursor = "default";
-            
-            createExplosionEffect(x, y); 
-        }
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
+
+// Handler único para o disparo do meteoro
+function handleMeteorAction(e) {
+    if (!isPlacingMeteor) return;
+
+    // Impede o comportamento padrão (scroll/zoom) no mobile
+    if (e.cancelable) e.preventDefault();
+
+    const coords = getCanvasCoordinates(e, canvas);
+    
+    // Chama a sua função no SpecialAttacks.js
+    const success = SpecialAttacks.useMeteor(coords.x, coords.y, enemies, TILE_SIZE);
+
+    if (success) {
+        createExplosionEffect(coords.x, coords.y);
+        
+        // Reseta o estado
+        isPlacingMeteor = false;
+        document.body.style.cursor = "default";
+        const btn = document.getElementById('btn-meteor');
+        if (btn) btn.classList.remove('active-aim');
     }
-});
+}
+
+// REGISTRA OS DOIS EVENTOS
+canvas.addEventListener('click', handleMeteorAction);
+canvas.addEventListener('touchstart', handleMeteorAction, { passive: false });
 /**
  * CARREGAMENTO DE NÍVEL
  */
@@ -684,7 +708,7 @@ function updateAbilityUI() {
 // Função para criar o efeito visual da explosão
 function createExplosionEffect(x, y) {
     const particleCount = 20;
-    
+    playSound(SFX.explosion);
     // 1. Criar as partículas de explosão (Fogo/Fumaça)
     for (let i = 0; i < particleCount; i++) {
         const angle = Math.random() * Math.PI * 2;
