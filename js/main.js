@@ -3,6 +3,7 @@
  */
 import { SettingsManager } from './SettingsManager.js';
 import { SFX, playSound } from './core/AudioManager.js';
+import { updateMusic, Music } from './core/AudioManager.js';
 import { GAME_CONFIG } from './constants.js';
 import { Map } from './core/Map.js';
 import { Input } from './core/Input.js';
@@ -280,6 +281,9 @@ function startLevel(levelId) {
 
     gameStarted = true;
     updateHUD();
+    if (typeof updateMusic === 'function') {
+        updateMusic();
+    }
 }
 
 /**
@@ -288,7 +292,6 @@ function startLevel(levelId) {
 let lastTime = 0; // Variável global para rastrear o tempo anterior
 
 function gameLoop(currentTime) {
-    // Calcula quanto tempo passou desde o último quadro
     const deltaTime = currentTime - lastTime;
     lastTime = currentTime;
 
@@ -298,14 +301,21 @@ function gameLoop(currentTime) {
     }
 
     if (!isPaused) {
-        // 1. Atualiza a lógica de tempo dos ataques especiais (cooldowns)
-        if (typeof SpecialAttacks !== 'undefined') {
-            SpecialAttacks.update(deltaTime);
-            updateAbilityUI(); // Função que cuida do visual do botão
+        // --- ADICIONE ISTO: Garante que a música toque se não estiver pausado ---
+        if (typeof updateMusic === 'function') {
+            updateMusic(); 
         }
 
+        if (typeof SpecialAttacks !== 'undefined') {
+            SpecialAttacks.update(deltaTime);
+            updateAbilityUI();
+        }
         updateAndRender(currentTime);
     } else {
+        // --- ADICIONE ISTO: Pausa a música quando entrar no else (Pause) ---
+        if (typeof Music !== 'undefined' && Music.bgm) {
+            Music.bgm.pause();
+        }
         drawPauseOverlay();
     }
     
@@ -637,6 +647,11 @@ function resizeCanvas() {
 
 function endGame() {
     isGameOver = true;
+    // --- NOVO: PARAR MÚSICA NO GAME OVER ---
+    if (Music && Music.bgm) {
+        Music.bgm.pause();
+        // Opcional: Music.bgm.currentTime = 0; // Reseta para o início
+    }
     document.getElementById('game-over-screen').style.display = 'flex';
 }
 
